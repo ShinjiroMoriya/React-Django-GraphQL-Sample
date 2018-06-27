@@ -70,3 +70,13 @@ Emailに`sample@example.com`を入力してパスワード登録する。
 ```
 openssl req -x509 -out localhost.crt -keyout localhost.key -newkey rsa:2048 -nodes -sha256 -subj '/CN=localhost' -extensions EXT -config <( printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
 ```
+
+## Salesforce データ構造
+### Contact (取引先責任者)
+![contact](https://user-images.githubusercontent.com/7581596/41984736-5ddd8b22-7a6c-11e8-807e-85eb40147335.jpg)
+
+### Space__c (カスタムオブジェクト)
+![space__c](https://user-images.githubusercontent.com/7581596/41984334-6696971e-7a6b-11e8-89d0-93d853d85c9c.jpg)
+
+### News__c (カスタムオブジェクト)
+![news__c](https://user-images.githubusercontent.com/7581596/41984436-a4ce3f1e-7a6b-11e8-9a59-12d213947ab2.jpg)
