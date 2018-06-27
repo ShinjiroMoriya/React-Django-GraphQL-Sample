@@ -8,11 +8,15 @@
     "sendgrid:starter"
   ],
   "env": {
+    "GRAPHQL_URL": "https://[APP-NAME].herokuapp.com/graphql",
     "DISABLE_COLLECTSTATIC": "1"
   },
   "buildpacks": [
     {
       "url": "https://github.com/heroku/heroku-buildpack-nodejs"
+    },
+    {
+      "url": "https://github.com/mars/create-react-app-buildpack"
     },
     {
       "url": "https://github.com/heroku/heroku-buildpack-python"

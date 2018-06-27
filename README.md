@@ -15,6 +15,7 @@
 - heroku connect
 - Sendgrid
 ## Heroku Config Vars
+- GRAPHQL_URL=https://[APP-NAME].herokuapp.com/graphql
 - DISABLE_COLLECTSTATIC=1
 
 ## Heroku Buildbacks

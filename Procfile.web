@@ -1,2 +1,2 @@
-django: gunicorn -c tb_app/config.py tb_app.wsgi --bind 127.0.0.1:$DJANGO_PORT
+django: gunicorn -c tb_app/config.py tb_app.wsgi --bind 127.0.0.1:8888
 node: npm run server
