@@ -56,7 +56,7 @@ class Top extends Component {
         </Helmet>
         <div className="full_image">
           <img
-            src="https://res.cloudinary.com/hga2z6dng/image/upload/v1529502212/main.jpg"
+            src="/assets/images/main.jpg"
             alt=""
           />
         </div>
