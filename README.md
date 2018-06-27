@@ -1,9 +1,13 @@
 # Heroku Sample App React/SSR/GraphQL
+
+## Heroku Button
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+
 ## Language
 - Nodejs 10.2.1
 - Python 3.6.5
 ## Web Framework
-- epress (nodejs)
+- express (nodejs)
 - django (python)
 ## Heroku Add-ons
 - Cloudinary
@@ -21,7 +25,6 @@
 
 ## Procfile
 ```
-release: python manage.py migrate account_token
 web: bin/runsvdir-dyno
 ```
 ## Procfile.web
@@ -30,9 +33,8 @@ django: gunicorn -c tb_app/config.py tb_app.wsgi --bind 127.0.0.1:8000
 node: npm run server
 ```
 ## 概要
-バックエンドはAPIをDjango GraphQLで<br>
-フロントエンドはReact/Redux/SSR（expressjs）を<br>
-利用したアプリケーション。
+バックエンドはDjango GraphQLで<br>
+フロントエンドはReact/Redux/SSR（expressjs）を利用したアプリケーション。
 
 `/graphql`ディレクトリは`http-proxy-middleware`を利用して<br>
 djangoアプリケーションのサーバーにアクセスしている。
@@ -46,15 +48,22 @@ app.use(
 );
 ```
 
-## Deploy
+## Heroku Connect を使う場合
 - Salesforceでカスタムオブジェクト、Space、Newsを作成する。
 - heroku buttonでデプロイ後
 - heroku run bash --app アプリ名
+- addonのheroku-connectを追加してContact、Space、Newsをmappingする。
 - python manage.py migrate account_token
 
-
-## Heroku Button
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+## Heroku Connect を使わない場合
+```
+$ heroku run bash --app アプリ名
+$ make init
+```
+## Heroku Connect を使わない場合のサンプルアカウント
+`/register`にアクセスして、<br>
+Emailに`sample@example.com`を入力してパスワード登録する。
+※新規Emailの登録は不可です。
 
 ### localhostでSSL
 #### keyとcrtを発行コマンド

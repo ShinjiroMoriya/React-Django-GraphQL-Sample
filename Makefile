@@ -22,3 +22,9 @@ pretty:
 
 csscomb:
 	csscomb ${scssCombPath}
+
+create:
+	python manage.py news_create && python manage.py space_create && python manage.py account_create
+
+init:
+	python manage.py migrate account account_token space && make create
