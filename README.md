@@ -34,7 +34,7 @@ node: npm run server
 フロントエンドはReact/Redux/SSR（expressjs）を<br>
 利用したアプリケーション。
 
-`/graphql`ディレクトリを`http-proxy-middleware`を利用して<br>
+`/graphql`ディレクトリは`http-proxy-middleware`を利用して<br>
 djangoアプリケーションのサーバーにアクセスしている。
 
 ```
