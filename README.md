@@ -49,7 +49,7 @@ app.use(
 ```
 
 ## Deploy
-- `.env.production`ファイルを作成し、<br>
+- `.env.production`ファイルを作成し、
 ```GRAPHQL_URL=https://[APP-NAME].herokuapp.com/graphql```
 を書き込む。
 - `$ npm run build`でビルドする。
@@ -59,7 +59,7 @@ app.use(
 - SSRで確認する場合は、`$ npm run dev_build`でビルドする。
 - サーバーは`$ npm run dev_server`
 - djangoの方もサーバーを立てる`$ make server`
-- 開発環境はSSLで構築されているので、sslのキーを発行する。
+- 開発環境はSSLで構築されているので、sslのキーを発行する。
 
 ### localhostでSSL
 #### keyとcrtを発行コマンド
