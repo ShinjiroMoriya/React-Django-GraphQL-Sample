@@ -27,9 +27,8 @@ if (typeof window === "undefined") {
 
 const PORT = process.env.PORT || 3000;
 const DJANGO_PORT = 8000;
-const DEV = process.env.DEV || false;
 
-if (DEV) {
+if (process.env.DEV) {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 }
 
@@ -104,7 +103,7 @@ app.get("*", (req, res) => {
     });
 });
 
-if (DEV === true) {
+if (process.env.DEV) {
   const options = {
     key: readFileSync("../localhost.key"),
     cert: readFileSync("../localhost.crt")
