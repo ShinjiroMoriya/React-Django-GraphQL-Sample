@@ -72,7 +72,7 @@
   },
   "scripts": {
     "start": "GRAPHQL_URL=https://localhost:8000/graphql node scripts/start.js",
-    "build": "make sassBuild && node scripts/build.js",
+    "build": "NODE_ENV=production make sassBuild && node scripts/build.js",
     "dev_build": "GRAPHQL_URL=https://localhost:8000/graphql node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
     "dev_server": "DEV=true GRAPHQL_URL=https://localhost:8000/graphql node -r babel-register ./server.js",

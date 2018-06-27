@@ -10,7 +10,12 @@ import moment from "moment";
 import "moment/locale/ja";
 import * as actions from "../actions";
 import { SuccessModal } from "./parts/Modal";
-import { authQuery, spaceQuery, contractSpacesQuery ,errorQuery } from "./parts/Query";
+import {
+  authQuery,
+  spaceQuery,
+  contractSpacesQuery,
+  errorQuery
+} from "./parts/Query";
 import Cookie from "js-cookie";
 import { stringToDate } from "../functions";
 
@@ -52,9 +57,7 @@ class SpaceDetail extends Component {
   }
 
   static fetchAction(store, token, params) {
-    return store.dispatch(
-      actions.queryAction(query(token, params.pk))
-    );
+    return store.dispatch(actions.queryAction(query(token, params.pk)));
   }
 
   successClose() {
@@ -183,8 +186,13 @@ class SpaceDetail extends Component {
     return (
       <Fragment>
         <Helmet>
-          <title>{`${this.props.state.space.name}｜スペース｜BASYO KASHI`}</title>
-          <meta name="description" content={`${this.props.state.space.name}です`} />
+          <title>{`${
+            this.props.state.space.name
+          }｜スペース｜BASYO KASHI`}</title>
+          <meta
+            name="description"
+            content={`${this.props.state.space.name}です`}
+          />
         </Helmet>
         {this.props.state.space.name && (
           <div className="content">
@@ -192,7 +200,9 @@ class SpaceDetail extends Component {
               <ContentHeader title={this.props.state.space.name} />
               <div className="space_detail">
                 <div className="space_detail_image">
-                  {this.props.state.space.mainImage && <img src={this.props.state.space.mainImage} alt="" />}
+                  {this.props.state.space.mainImage && (
+                    <img src={this.props.state.space.mainImage} alt="" />
+                  )}
                 </div>
                 <table className="space_detail_table">
                   <tbody>
@@ -206,7 +216,9 @@ class SpaceDetail extends Component {
                     </tr>
                     <tr>
                       <th>価格</th>
-                      <td>{numeral(this.props.state.space.price).format("0,0")}円</td>
+                      <td>
+                        {numeral(this.props.state.space.price).format("0,0")}円
+                      </td>
                     </tr>
                     {!this.props.state.space.contractStatus ? (
                       this.props.state.auth.status === true ? (

@@ -34,6 +34,4 @@ class AppContainer extends React.Component {
   }
 }
 
-export default connect(
-  state => ({ state }),
-)(AppContainer);
+export default connect(state => ({ state }))(AppContainer);

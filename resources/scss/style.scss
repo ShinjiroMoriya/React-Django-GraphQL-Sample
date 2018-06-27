@@ -645,10 +645,13 @@
 
         border-bottom: 1px dotted #ddd;
 
-        a {
-            padding: 15px;
+        a
+        {
             display: block;
-            &:hover {
+
+            padding: 15px;
+            &:hover
+            {
                 background: #f1f1f1;
             }
         }
@@ -656,8 +659,9 @@
 }
 .news_date
 {
-    width: 110px;
     display: inline-block;
+
+    width: 110px;
     margin: 0 20px 0 0;
 }
 .color_1_btn
@@ -1054,17 +1058,21 @@
     color: #fff;
     background: #f26964;
 }
-.news_detail {
-    padding: 40px 0;
+.news_detail
+{
     width: 640px;
     margin: 0 auto;
+    padding: 40px 0;
 }
-.news_detail_date {
-    margin: 0 0 20px 0;
+.news_detail_date
+{
     font-size: 14px;
     line-height: 1;
+
+    margin: 0 0 20px 0;
 }
-.news_detail_content {
+.news_detail_content
+{
     font-size: 16px;
     line-height: 1.8;
 }

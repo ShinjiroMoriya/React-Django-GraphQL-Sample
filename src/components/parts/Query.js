@@ -89,7 +89,7 @@ pk
 name
 content
 activeDate
-`
+`;
 
 export const errorQuery = `
 field message
