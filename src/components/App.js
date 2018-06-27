@@ -9,10 +9,7 @@ import RootReducers from "../reducers";
 import { createLogger } from "redux-logger";
 
 const loggerMiddleware = createLogger();
-const middleware =
-  process.env.NODE_ENV === "production"
-    ? applyMiddleware(thunk)
-    : applyMiddleware(thunk, loggerMiddleware);
+const middleware = applyMiddleware(thunk, loggerMiddleware);
 
 const store = createStore(RootReducers, window.INITIAL_STATE, middleware);
 
