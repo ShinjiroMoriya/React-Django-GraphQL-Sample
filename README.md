@@ -20,17 +20,18 @@
 - https://github.com/danp/heroku-buildpack-runit
 
 ## Procfile
-release: python manage.py migrate account_token
+release: python manage.py migrate account_token<br>
 web: bin/runsvdir-dyno
 
 ## Procfile.web
-django: gunicorn -c tb_app/config.py tb_app.wsgi --bind 127.0.0.1:8000
+django: gunicorn -c tb_app/config.py tb_app.wsgi --bind 127.0.0.1:8000<br>
 node: npm run server
 ## 概要
-バックエンドはAPIをDjango GraphQLで
-フロントエンドはReact/Redux/SSR（expressjs）を利用したアプリケーション。
+バックエンドはAPIをDjango GraphQLで<br>
+フロントエンドはReact/Redux/SSR（expressjs）を<br>
+利用したアプリケーション。
 
-`/graphql`ディレクトリを`http-proxy-middleware`を利用して
+`/graphql`ディレクトリを`http-proxy-middleware`を利用して<br>
 djangoアプリケーションのサーバーにアクセスしている。
 
 ```
