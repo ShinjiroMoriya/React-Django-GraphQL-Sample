@@ -3,10 +3,10 @@
   "description": "Demo App",
   "keywords": [],
   "addons": [
-    "CLOUDINARY:starter",
-    "DATABASE:hobby-dev",
-    "HEROKUCONNECT:danketsu",
-    "SENDGRID:starter"
+    "cloudinary:starter",
+    "heroku-postgresql:hobby-dev",
+    "herokuconnect:danketsu",
+    "sendgrid:starter"
   ],
   "env": {
     "DISABLE_COLLECTSTATIC": "1"
