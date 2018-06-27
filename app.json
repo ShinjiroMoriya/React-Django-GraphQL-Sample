@@ -1,0 +1,14 @@
+{
+  "name": "Demo App",
+  "description": "Demo App",
+  "keywords": [],
+  "addons": [
+    "CLOUDINARY:starter",
+    "DATABASE:hobby-dev",
+    "HEROKUCONNECT:danketsu",
+    "SENDGRID:starter"
+  ],
+  "env": {
+    "DISABLE_COLLECTSTATIC": "1"
+  }
+}

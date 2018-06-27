@@ -1,0 +1,169 @@
+body
+{
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Yu Gothic', YuGothic, Hiragino Kaku Gothic ProN, Arial, Meiryo, sans-serif;
+    font-size: 13px;
+    line-height: 1;
+
+    min-width: 1200px;
+
+    color: #222;
+
+    -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-kerning: normal;
+    @include mediaQuery(767)
+    {
+        min-width: 320px;
+    }
+}
+
+body,
+p,
+ul,
+ol,
+h1,
+h2,
+h3,
+figure,
+figcaption,
+input
+{
+    margin: 0;
+    padding: 0;
+}
+header,
+section,
+footer,
+main,
+nav,
+figure
+{
+    display: block;
+}
+img
+{
+    width: auto;
+    max-width: 100%;
+    height: auto;
+
+    vertical-align: top;
+
+    border: 0;
+}
+svg,
+input
+{
+    vertical-align: top;
+
+    border: none;
+}
+select
+{
+    border: none;
+}
+i
+{
+    font-style: normal;
+}
+li
+{
+    list-style: none;
+}
+input
+{
+    outline: none;
+
+    -webkit-appearance: none;
+       -moz-appearance: none;
+}
+input[readonly]
+{
+    cursor: default;
+}
+button
+{
+    font-family: inherit;
+}
+input[type='button'],
+input[type='submit'],
+button,
+select
+{
+    cursor: pointer;
+
+    border-radius: 0;
+
+    -webkit-appearance: none;
+       -moz-appearance: none;
+}
+table,
+th,
+td
+{
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+a
+{
+    text-decoration: none;
+
+    color: inherit;
+}
+input:disabled,
+button:disabled
+{
+    cursor: default;
+}
+input
+{
+    @include box-sizing;
+}
+input[type='radio'],
+input[type='checkbox']
+{
+    cursor: pointer;
+}
+input:-webkit-autofill
+{
+    -webkit-box-shadow: 0 0 0 1000px #fff inset;
+}
+input,
+textarea
+{
+    line-height: 1.6;
+
+    color: inherit;
+    border: none;
+    outline: none;
+}
+button
+{
+    margin: 0;
+    padding: 0;
+
+    cursor: pointer;
+
+    border: 0;
+    background: none;
+
+    -webkit-appearance: none;
+       -moz-appearance: none;
+    &:active,
+    &:focus
+    {
+        outline: none;
+    }
+}
+
+html
+{
+    position: relative;
+
+    min-height: 100%;
+}
+body
+{
+    padding: 0 0 200px 0;
+}
