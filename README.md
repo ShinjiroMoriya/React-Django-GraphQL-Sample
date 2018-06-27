@@ -45,6 +45,14 @@ app.use(
   })
 );
 ```
+
+## Deploy
+- Salesforceでカスタムオブジェクト、Space、Newsを作成する。
+- heroku buttonでデプロイ後
+- heroku run bash --app アプリ名
+- python manage.py migrate account_token
+
+
 ## Heroku Button
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
