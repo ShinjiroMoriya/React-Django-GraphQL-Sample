@@ -1,6 +1,6 @@
 import fetch from "isomorphic-fetch";
 
-const GRAPHQL_URL = process.env.GRAPHQL_URL || "/graphql";
+const GRAPHQL_URL = process.env.GRAPHQL_URL;
 
 const timeoutFetch = (ms, promise) => {
   return new Promise((resolve, reject) => {
