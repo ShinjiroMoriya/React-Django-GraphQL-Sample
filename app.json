@@ -5,7 +5,6 @@
   "addons": [
     "cloudinary:starter",
     "heroku-postgresql:hobby-dev",
-    "herokuconnect:danketsu",
     "sendgrid:starter"
   ],
   "env": {
