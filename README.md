@@ -20,7 +20,6 @@
 
 ## Heroku Buildbacks
 - https://github.com/heroku/heroku-buildpack-nodejs
-- https://github.com/mars/create-react-app-buildpack
 - https://github.com/heroku/heroku-buildpack-python
 - https://github.com/danp/heroku-buildpack-runit
 
@@ -30,7 +29,7 @@ web: bin/runsvdir-dyno
 ```
 ## Procfile.web
 ```
-django: gunicorn -c tb_app/config.py tb_app.wsgi --bind 127.0.0.1:8000
+django: gunicorn -c tb_app/config.py tb_app.wsgi --bind 127.0.0.1:8888
 node: npm run server
 ```
 ## 概要
@@ -49,6 +48,25 @@ app.use(
 );
 ```
 
+## Deploy
+- `.env.production`ファイルを作成し、<br>
+```GRAPHQL_URL=https://[APP-NAME].herokuapp.com/graphql```
+を書き込む。
+- `$ npm run build`でビルドする。
+
+## Local開発
+- 基本的には`$ npm run start`で開発を進める。
+- SSRで確認する場合は、`$ npm run dev_build`でビルドする。
+- サーバーは`$ npm run dev_server`
+- djangoの方もサーバーを立てる`$ make server`
+- 開発環境はSSLで構築されているので、sslのキーを発行する。
+
+### localhostでSSL
+#### keyとcrtを発行コマンド
+```
+openssl req -x509 -out localhost.crt -keyout localhost.key -newkey rsa:2048 -nodes -sha256 -subj '/CN=localhost' -extensions EXT -config <( printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
+```
+
 ## Heroku Connect を使う場合
 - Salesforceでカスタムオブジェクト、Space、Newsを作成する。
 - heroku buttonでデプロイ後
@@ -65,12 +83,6 @@ $ make init
 `/register`にアクセスして、<br>
 Emailに`sample@example.com`を入力してパスワード登録する。
 ※新規Emailの登録は不可です。
-
-### localhostでSSL
-#### keyとcrtを発行コマンド
-```
-openssl req -x509 -out localhost.crt -keyout localhost.key -newkey rsa:2048 -nodes -sha256 -subj '/CN=localhost' -extensions EXT -config <( printf "[dn]\nCN=localhost\n[req]\ndistinguished_name = dn\n[EXT]\nsubjectAltName=DNS:localhost\nkeyUsage=digitalSignature\nextendedKeyUsage=serverAuth")
-```
 
 ## Salesforce データ構造
 ### Contact (取引先責任者)
