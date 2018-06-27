@@ -14,9 +14,9 @@
 - DISABLE_COLLECTSTATIC=1
 
 ## Heroku Buildbacks
-- heroku/nodejs
+- https://github.com/heroku/heroku-buildpack-nodejs
 - https://github.com/mars/create-react-app-buildpack
-- heroku/python
+- https://github.com/heroku/heroku-buildpack-python
 - https://github.com/danp/heroku-buildpack-runit
 
 ## Procfile
