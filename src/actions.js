@@ -48,6 +48,7 @@ export const queryAction = query => dispatch => {
       return dispatch({
         type: "SUCCESS",
         queryLoading: false,
+        messages: [],
         ...json.data
       });
     })
@@ -96,6 +97,7 @@ export const mutationAction = (query, type) => dispatch => {
         return dispatch({
           type: "SUCCESS",
           mutationLoading: false,
+          messages: [],
           ...json.data[type]
         });
       } else {
