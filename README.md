@@ -56,7 +56,7 @@ app.use(
 
 ## Local開発
 - 基本的には`$ npm run start`で開発を進める。
-- SSRで確認する場合は、`$ npm run dev_build`でビルドする。
+- SSRで確認する場合は、`$ npm run dev_build`でビルドする。
 - サーバーは`$ npm run dev_server`
 - djangoの方もサーバーを立てる`$ make server`
 - 開発環境はSSLで構築されているので、sslのキーを発行する。
