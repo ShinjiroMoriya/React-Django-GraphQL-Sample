@@ -76,14 +76,11 @@ class Password extends Component {
     this.props
       .mutationAction(
         JSON.stringify({
-          query: `mutation($email: String!) {
-            resetPassword(email: $email) {
-              success errors { ${errorQuery} }
-            }
-          }`,
-          variables: {
-            email: email
-          }
+          query: `mutation($email: String!) { ` +
+            `resetPassword(email: $email) { ` +
+              `success errors { ${errorQuery} } ` +
+          `} }`,
+          variables: { email: email }
         }),
         "resetPassword"
       )

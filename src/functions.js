@@ -1,4 +1,5 @@
 import moment from "moment";
+import Cookie from "js-cookie";
 
 export const stringToDate = dateString => {
   if (dateString === undefined) {
@@ -21,4 +22,15 @@ export const stringToDate = dateString => {
 
 export const dateDisplay = (date, format = "Y年MM月DD日 HH:mm") => {
   return moment(date, "YYYY-MM-DDTHH:mm:ss").format(format);
+};
+
+export const expireUpdate = res => {
+  if (res.auth.status === true) {
+    Cookie.set("uid", Cookie.get("uid"), {
+      expires: stringToDate(res.auth.expire),
+      secure: true
+    });
+  } else {
+    Cookie.remove("uid");
+  }
 };

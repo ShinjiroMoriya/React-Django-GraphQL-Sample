@@ -7,15 +7,11 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import Cookie from "js-cookie";
 import { authQuery } from "./parts/Query";
+import { expireUpdate } from "../functions";
 
-const query = token => {
+const query = () => {
   return JSON.stringify({
-    query: `query($token: String) {
-      auth(token: $token) { ${authQuery} }
-    }`,
-    variables: {
-      token: token
-    }
+    query: `query { auth { ${authQuery} } }`
   });
 };
 
@@ -23,18 +19,17 @@ class Guide extends Component {
   constructor(props) {
     super(props);
     if (Cookie.get("uid")) {
-      this.props.queryAction(query(Cookie.get("uid"))).then(res => {
-        if (res.auth.status === false) {
-          Cookie.remove("uid");
-        }
-      });
+      this.props
+        .queryAction(query())
+        .then(res => expireUpdate(res))
+        .catch(e => console.log(e));
     } else {
       this.props.queryNoAction();
     }
   }
 
   static fetchAction(store, token) {
-    return store.dispatch(actions.queryAction(query(token)));
+    return store.dispatch(actions.queryAction(query(), token));
   }
 
   render() {

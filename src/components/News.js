@@ -7,61 +7,49 @@ import { ContentHeader } from "./parts/ContentHeader";
 import { NewsBlock } from "./parts/News";
 import { Pager } from "./parts/Pager";
 import { authQuery, newsQuery } from "./parts/Query";
-import Cookie from "js-cookie";
-import { stringToDate } from "../functions";
+import { expireUpdate } from "../functions";
 
-const query = (token, page) => {
+const query = page => {
   return JSON.stringify({
-    query: `query($token: String, $page: Int) {
-      auth(token: $token) { ${authQuery} }
-      newsItems(page: $page) { ${newsQuery} }
-    }`,
-    variables: {
-      page: page,
-      token: token
-    }
+    query: `query($page: Int) { ` +
+      `auth { ${authQuery} } ` +
+      `newsItems(page: $page) { ${newsQuery} } ` +
+    `}`,
+    variables: { page: page }
   });
-};
-
-const expireUpdate = res => {
-  if (res.auth.status === true) {
-    Cookie.set("uid", Cookie.get("uid"), {
-      expires: stringToDate(res.auth.expire),
-      secure: true
-    });
-  } else {
-    Cookie.remove("uid");
-  }
 };
 
 class News extends Component {
   constructor(props) {
     super(props);
     const page = this.props.match.params.page || 1;
-    const page_loader = () => {
+    const contentLoader = () => {
       this.props
-        .queryAction(query(Cookie.get("uid"), page))
-        .then(res => expireUpdate(res));
+        .queryAction(query(page))
+        .then(res => expireUpdate(res))
+        .catch(e => console.log(e));
     };
     if (this.props.state.newsItems.edges) {
       if (this.props.state.newsItems.currentPage !== page) {
-        page_loader();
+        contentLoader();
       }
     }
     if (!this.props.state.newsItems.edges) {
-      page_loader();
+      contentLoader();
     }
   }
 
-  static fetchAction(store, token) {
-    return store.dispatch(actions.queryAction(query(token)));
+  static fetchAction(store, token, params) {
+    const news_page = params.page || 1;
+    return store.dispatch(actions.queryAction(query(news_page), token));
   }
 
   pageLoader(e) {
     const page_number = e.currentTarget.dataset.page || 1;
     this.props
-      .queryAction(query(Cookie.get("uid"), parseInt(page_number, 10)))
-      .then(res => expireUpdate(res));
+      .queryAction(query(parseInt(page_number, 10)))
+      .then(res => expireUpdate(res))
+      .catch(e => console.log(e));
   }
 
   render() {

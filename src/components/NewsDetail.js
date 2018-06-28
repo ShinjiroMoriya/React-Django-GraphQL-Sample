@@ -6,19 +6,15 @@ import { bindActionCreators } from "redux";
 import { ContentHeader } from "./parts/ContentHeader";
 import * as actions from "../actions";
 import { authQuery, newsItemQuery } from "./parts/Query";
-import Cookie from "js-cookie";
-import { stringToDate, dateDisplay } from "../functions";
+import { dateDisplay, expireUpdate } from "../functions";
 
-const query = (token, pk) => {
+const query = pk => {
   return JSON.stringify({
-    query: `query($token: String, $newsId: String!) {
-      auth(token: $token) { ${authQuery} }
-      newsItem(newsId: $newsId) { ${newsItemQuery} }
-    }`,
-    variables: {
-      newsId: pk,
-      token: token
-    }
+    query: `query($newsId: String!) { ` +
+      `auth { ${authQuery} } ` +
+      `newsItem(newsId: $newsId) { ${newsItemQuery} } ` +
+    `}`,
+    variables: { newsId: pk }
   });
 };
 
@@ -26,21 +22,13 @@ class NewsDetail extends Component {
   constructor(props) {
     super(props);
     this.props
-      .queryAction(query(Cookie.get("uid"), this.props.match.params.pk))
-      .then(res => {
-        if (res.auth.status === true) {
-          Cookie.set("uid", Cookie.get("uid"), {
-            expires: stringToDate(res.auth.expire),
-            secure: true
-          });
-        } else {
-          Cookie.remove("uid");
-        }
-      });
+      .queryAction(query(this.props.match.params.pk))
+      .then(res => expireUpdate(res))
+      .catch(e => console.log(e));
   }
 
   static fetchAction(store, token, params) {
-    return store.dispatch(actions.queryAction(query(token, params.pk)));
+    return store.dispatch(actions.queryAction(query(params.pk), token));
   }
 
   render() {

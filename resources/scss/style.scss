@@ -1081,9 +1081,10 @@
 }
 ._block_loading
 {
+    position: relative;
+
     width: 100%;
     height: 100px;
-    position: relative;
 
     background: rgba(255, 255, 255, .7);
 

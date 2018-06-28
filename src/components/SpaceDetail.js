@@ -16,18 +16,16 @@ import {
   contractSpacesQuery,
   errorQuery
 } from "./parts/Query";
-import Cookie from "js-cookie";
-import { stringToDate } from "../functions";
+import { expireUpdate } from "../functions";
 
-const query = (token, pk) => {
+const query = pk => {
   return JSON.stringify({
-    query: `query($token: String, $spaceId: String!) {
-      auth(token: $token) { ${authQuery} }
-      space(spaceId: $spaceId) { ${spaceQuery} }
-    }`,
+    query: `query($spaceId: String!) { ` +
+      `auth { ${authQuery} } ` +
+      `space(spaceId: $spaceId) { ${spaceQuery} } ` +
+    `}`,
     variables: {
-      spaceId: pk,
-      token: token
+      spaceId: pk
     }
   });
 };
@@ -43,21 +41,13 @@ class SpaceDetail extends Component {
       messages: []
     };
     this.props
-      .queryAction(query(Cookie.get("uid"), this.props.match.params.pk))
-      .then(res => {
-        if (res.auth.status === true) {
-          Cookie.set("uid", Cookie.get("uid"), {
-            expires: stringToDate(res.auth.expire),
-            secure: true
-          });
-        } else {
-          Cookie.remove("uid");
-        }
-      });
+      .queryAction(query(this.props.match.params.pk))
+      .then(res => expireUpdate(res))
+      .catch(e => console.log(e));
   }
 
   static fetchAction(store, token, params) {
-    return store.dispatch(actions.queryAction(query(token, params.pk)));
+    return store.dispatch(actions.queryAction(query(params.pk), token));
   }
 
   successClose() {
@@ -139,19 +129,16 @@ class SpaceDetail extends Component {
     this.props
       .mutationAction(
         JSON.stringify({
-          query: `mutation($startDate: String!, $endDate: String!, $token: String!, $spaceId: String!) {
-          spaceContract(startDate: $startDate, endDate: $endDate, token: $token, spaceId: $spaceId, order: ["contract_start"]) {
-            success
-            errors { ${errorQuery} }
-            space { ${spaceQuery} }
-            contractSpaces { ${contractSpacesQuery} }
-          }
-        }`,
+          query: `mutation($startDate: String!, $endDate: String!, $spaceId: String!) { ` +
+            `spaceContract(startDate: $startDate, endDate: $endDate, spaceId: $spaceId, order: ["contract_start"]) { ` +
+              `success errors { ${errorQuery} } ` +
+              `space { ${spaceQuery} } ` +
+              `contractSpaces { ${contractSpacesQuery} } ` +
+          `} }`,
           variables: {
             startDate: this.state.startDate,
             endDate: this.state.endDate,
-            spaceId: this.props.match.params.pk,
-            token: Cookie.get("uid")
+            spaceId: this.props.match.params.pk
           }
         }),
         "spaceContract"
@@ -197,7 +184,7 @@ class SpaceDetail extends Component {
         <div className="content">
           <div className="content_inner">
             {this.props.state.queryLoading ? (
-                  <div className="_block_loading" />
+              <div className="_block_loading" />
             ) : (
               <Fragment>
                 <ContentHeader title={this.props.state.space.name} />
@@ -271,7 +258,9 @@ class SpaceDetail extends Component {
                                   })}
                                 <div className="space_detail_form_block">
                                   <DatePickerWrap
-                                    onClick={this.datePickerEndChange.bind(this)}
+                                    onClick={this.datePickerEndChange.bind(
+                                      this
+                                    )}
                                     date={this.state.endDate}
                                     placeholder="終了日時を選択してください"
                                   />
@@ -300,7 +289,9 @@ class SpaceDetail extends Component {
                                 <Link
                                   to={{
                                     pathname: "/login",
-                                    state: { from: this.props.location.pathname }
+                                    state: {
+                                      from: this.props.location.pathname
+                                    }
                                   }}
                                 >
                                   ログインする

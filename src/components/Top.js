@@ -8,19 +8,15 @@ import { bindActionCreators } from "redux";
 import { NewsBlock } from "./parts/News";
 import { SpaceBlock } from "./parts/Space";
 import { authQuery, topSpaceQuery, topNewsQuery } from "./parts/Query";
-import Cookie from "js-cookie";
-import { stringToDate } from "../functions";
+import { expireUpdate } from "../functions";
 
-const query = token => {
+const query = () => {
   return JSON.stringify({
-    query: `query($token: String) {
-      auth(token: $token) { ${authQuery} }
-      topSpaces { ${topSpaceQuery} }
-      topNewsItems { ${topNewsQuery} }
-    }`,
-    variables: {
-      token: token
-    }
+    query: `query { ` +
+      `auth { ${authQuery} } ` +
+      `topSpaces { ${topSpaceQuery} } ` +
+      `topNewsItems { ${topNewsQuery} } ` +
+    `}`
   });
 };
 
@@ -28,23 +24,17 @@ class Top extends Component {
   constructor(props) {
     super(props);
     if (!this.props.state.topSpaces.edges) {
-      this.props.queryAction(query(Cookie.get("uid"))).then(res => {
-        if (res.auth.status === true) {
-          Cookie.set("uid", Cookie.get("uid"), {
-            expires: stringToDate(res.auth.expire),
-            secure: true
-          });
-        } else {
-          Cookie.remove("uid");
-        }
-      });
+      this.props
+        .queryAction(query())
+        .then(res => expireUpdate(res))
+        .catch(e => console.log(e));
     } else {
       this.props.queryNoAction();
     }
   }
 
   static fetchAction(store, token) {
-    return store.dispatch(actions.queryAction(query(token)));
+    return store.dispatch(actions.queryAction(query(), token));
   }
 
   render() {

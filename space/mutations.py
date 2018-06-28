@@ -15,7 +15,6 @@ class SpaceContract(graphene.Mutation):
     class Arguments:
         startDate = graphene.String(required=True)
         endDate = graphene.String(required=True)
-        token = graphene.String(required=True)
         spaceId = graphene.String(required=True)
         order = graphene.List(graphene.String)
 
@@ -27,12 +26,12 @@ class SpaceContract(graphene.Mutation):
     )
 
     @staticmethod
-    def mutate(_, __, **kwargs):
+    def mutate(_, info, **kwargs):
         try:
             start_date = string_to_date(kwargs.get('startDate'))
             end_date = string_to_date(kwargs.get('endDate'))
             space_id = kwargs.get('spaceId')
-            token = kwargs.get('token')
+            token = info.context.META.get('HTTP_AUTHORIZATION')
 
             account_token = AccountToken.get_account({'token': token})
             if account_token is None:

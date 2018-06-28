@@ -11,15 +11,12 @@ class Logout extends Component {
 
     this.props.mutationAction(
       JSON.stringify({
-        query: `mutation($token: String!) {
-          logout(token: $token) {
+        query: `mutation {
+          logout {
             auth { ${authQuery} }
             success errors { field message }
           }
-        }`,
-        variables: {
-          token: Cookie.get("uid")
-        }
+        }`
       }),
       "logout"
     );

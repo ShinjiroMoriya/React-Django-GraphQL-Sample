@@ -1,4 +1,5 @@
 import fetch from "isomorphic-fetch";
+import Cookie from "js-cookie";
 
 const GRAPHQL_URL = process.env.GRAPHQL_URL;
 
@@ -18,7 +19,8 @@ export const queryNoAction = () => dispatch => {
   });
 };
 
-export const queryAction = query => dispatch => {
+export const queryAction = (query, uid) => dispatch => {
+  const token = uid || Cookie.get("uid");
   dispatch({
     type: "REQUEST",
     queryLoading: true
@@ -27,7 +29,10 @@ export const queryAction = query => dispatch => {
     30000,
     fetch(GRAPHQL_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token || null
+      },
       body: query
     })
   )
@@ -51,18 +56,6 @@ export const queryAction = query => dispatch => {
         messages: [],
         ...json.data
       });
-    })
-    .catch(e => {
-      return dispatch({
-        type: "FAILED",
-        queryLoading: false,
-        messages: [
-          {
-            field: "exception",
-            message: e
-          }
-        ]
-      });
     });
 };
 
@@ -75,7 +68,10 @@ export const mutationAction = (query, type) => dispatch => {
     30000,
     fetch(GRAPHQL_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: Cookie.get("uid") || null
+      },
       body: query
     })
   )
@@ -107,18 +103,6 @@ export const mutationAction = (query, type) => dispatch => {
           messages: json.data[type].errors
         });
       }
-    })
-    .catch(e => {
-      return dispatch({
-        type: "FAILED",
-        mutationLoading: false,
-        messages: [
-          {
-            field: "exception",
-            message: e
-          }
-        ]
-      });
     });
 };
 

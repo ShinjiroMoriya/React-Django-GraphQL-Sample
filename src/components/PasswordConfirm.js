@@ -82,7 +82,6 @@ class PasswordConfirm extends Component {
   }
 
   doSubmit() {
-    const token = this.props.match.params.token;
     const password = this.refs.password.value;
     const password_confirm = this.refs.password_confirm.value;
     if (password && password === password_confirm) {
@@ -90,14 +89,13 @@ class PasswordConfirm extends Component {
       this.props
         .mutationAction(
           JSON.stringify({
-            query: `mutation($token: String!, $password: String!) {
-              resetPasswordConfirm(token: $token, password: $password) {
-                success auth { ${authQuery} }
-                errors { ${errorQuery} }
-              }
-            }`,
+            query: `mutation($token: String!, $password: String!) { ` +
+              `resetPasswordConfirm(token: $token, password: $password) { ` +
+                `success auth { ${authQuery} } ` +
+                `errors { ${errorQuery} } ` +
+            `} }`,
             variables: {
-              token: token,
+              token: this.props.match.params.token,
               password: password
             }
           }),

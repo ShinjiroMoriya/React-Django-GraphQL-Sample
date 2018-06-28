@@ -8,19 +8,14 @@ import { connect } from "react-redux";
 import { contractSpacesQuery } from "./parts/Query";
 import Cookie from "js-cookie";
 import { authQuery } from "./parts/Query";
-import { dateDisplay } from "../functions";
+import { dateDisplay, expireUpdate } from "../functions";
 
 const query = token => {
   return JSON.stringify({
-    query: `query($token: String) {
-      auth(token: $token) { ${authQuery} }
-      contractSpaces(token: $token, order: ["contract_start"]) {
-        ${contractSpacesQuery}
-      }
-    }`,
-    variables: {
-      token: token
-    }
+    query: `query {
+      auth { ${authQuery} }
+      contractSpaces(order: ["contract_start"]) { ${contractSpacesQuery} }
+    }`
   });
 };
 
@@ -28,11 +23,15 @@ class Account extends Component {
   constructor(props) {
     super(props);
     if (Cookie.get("uid") && !this.props.state.contractSpaces.edges) {
-      this.props.queryAction(query(Cookie.get("uid"))).then(res => {
-        if (res.auth.status === false) {
-          this.props.history.push("/");
-        }
-      });
+      this.props
+        .queryAction(query())
+        .then(res => {
+          expireUpdate(res);
+          if (res.auth.status === false) {
+            this.props.history.push("/");
+          }
+        })
+        .catch(e => console.log(e));
     } else if (!Cookie.get("uid")) {
       this.props.history.push("/");
     } else {
@@ -41,7 +40,7 @@ class Account extends Component {
   }
 
   static fetchAction(store, token) {
-    return store.dispatch(actions.queryAction(query(token)));
+    return store.dispatch(actions.queryAction(query(), token));
   }
 
   render() {
@@ -50,54 +49,58 @@ class Account extends Component {
         <Helmet>
           <title>アカウント｜BASYO KASHI</title>
         </Helmet>
-        {!this.props.state.queryLoading && (
-          <div className="content">
-            <div className="content_inner">
-              <ContentHeader
-                title="アカウント"
-                text="ご利用状況をご確認いただけます。"
-              />
-              <div className="account_block">
-                {this.props.state.contractSpaces.edges.length !== 0 ? (
-                  <table className="account_table">
-                    <tbody>
-                      <tr>
-                        <th>店舗</th>
-                        <th>ご利用期間</th>
-                      </tr>
-                      {this.props.state.contractSpaces.edges.map(
-                        (space, index) => {
-                          return (
-                            <tr key={index}>
-                              <td>{space.node.name}</td>
-                              <td>
-                                {`${dateDisplay(
-                                  space.node.contractStart
-                                )} 〜 ${dateDisplay(space.node.contractEnd)}`}
-                              </td>
-                            </tr>
-                          );
-                        }
-                      )}
-                    </tbody>
-                  </table>
-                ) : (
-                  <div className="account_block_empty">
-                    <p className="account_block_text _space">
-                      現在借りているスペースはありません。
-                    </p>
-                    <p className="btn_1">
-                      <Link to="/space">借りに行く</Link>
-                    </p>
-                  </div>
-                )}
-              </div>
-              <p className="btn_3">
-                <Link to="/">トップに戻る</Link>
-              </p>
-            </div>
+        <div className="content">
+          <div className="content_inner">
+            {this.props.state.queryLoading ? (
+              <div className="_block_loading" />
+            ) : (
+              <Fragment>
+                <ContentHeader
+                  title="アカウント"
+                  text="ご利用状況をご確認いただけます。"
+                />
+                <div className="account_block">
+                  {this.props.state.contractSpaces.edges ? (
+                    <table className="account_table">
+                      <tbody>
+                        <tr>
+                          <th>店舗</th>
+                          <th>ご利用期間</th>
+                        </tr>
+                        {this.props.state.contractSpaces.edges.map(
+                          (space, index) => {
+                            return (
+                              <tr key={index}>
+                                <td>{space.node.name}</td>
+                                <td>
+                                  {`${dateDisplay(
+                                    space.node.contractStart
+                                  )} 〜 ${dateDisplay(space.node.contractEnd)}`}
+                                </td>
+                              </tr>
+                            );
+                          }
+                        )}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <div className="account_block_empty">
+                      <p className="account_block_text _space">
+                        現在借りているスペースはありません。
+                      </p>
+                      <p className="btn_1">
+                        <Link to="/space">借りに行く</Link>
+                      </p>
+                    </div>
+                  )}
+                </div>
+                <p className="btn_3">
+                  <Link to="/">トップに戻る</Link>
+                </p>
+              </Fragment>
+            )}
           </div>
-        )}
+        </div>
       </Fragment>
     );
   }

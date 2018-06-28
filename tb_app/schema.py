@@ -24,9 +24,6 @@ class Mutations(graphene.ObjectType):
     logout = Logout.Field(
         description='ログアウト'
     )
-    # refresh_token = RefreshToken.Field(
-    #     description='リフレッシュトークン'
-    # )
     account_update = AccountUpdate.Field(
         description='アカウントデータ更新'
     )

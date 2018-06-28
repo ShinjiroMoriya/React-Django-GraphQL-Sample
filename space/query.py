@@ -48,16 +48,15 @@ class SpaceQuery(graphene.ObjectType):
 
     contract_spaces = DjangoFilterConnectionField(
         SpaceType,
-        token=graphene.String(default_value=None),
         order=graphene.List(graphene.String),
     )
 
     @staticmethod
-    def resolve_contract_spaces(_, __, **kwargs):
+    def resolve_contract_spaces(_, info, **kwargs):
+        token = info.context.META.get('HTTP_AUTHORIZATION')
         order = kwargs.get('order')
         if order is None:
             order = ['-created_date']
-        token = kwargs.get('token')
         account_token = AccountToken.get_account({'token': token})
         if account_token is None:
             return None
