@@ -22,7 +22,7 @@ class Account(models.Model):
     created_date = models.DateTimeField(auto_now_add=True,
                                         db_column='created_date__c')
     updated_date = models.DateTimeField(auto_now=True,
-                                        db_column='update_date__c')
+                                        db_column='updated_date__c')
 
     def __str__(self):
         return self.name

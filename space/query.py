@@ -62,7 +62,8 @@ class SpaceQuery(graphene.ObjectType):
         if account_token is None:
             return None
         return Space.get_spaces({
-            'account': account_token.account
+            'account': account_token.account,
+            'contract_end__gte': datetime.now(),
         }).order_by(*order)
 
     top_spaces = DjangoFilterConnectionField(

@@ -194,134 +194,138 @@ class SpaceDetail extends Component {
             content={`${this.props.state.space.name}です`}
           />
         </Helmet>
-        {this.props.state.space.name && (
-          <div className="content">
-            <div className="content_inner">
-              <ContentHeader title={this.props.state.space.name} />
-              <div className="space_detail">
-                <div className="space_detail_image">
-                  {this.props.state.space.mainImage && (
-                    <img src={this.props.state.space.mainImage} alt="" />
-                  )}
-                </div>
-                <table className="space_detail_table">
-                  <tbody>
-                    <tr>
-                      <th>店舗名</th>
-                      <td>{this.props.state.space.name}</td>
-                    </tr>
-                    <tr>
-                      <th>店舗について</th>
-                      <td>{this.props.state.space.description}</td>
-                    </tr>
-                    <tr>
-                      <th>価格</th>
-                      <td>
-                        {numeral(this.props.state.space.price).format("0,0")}円
-                      </td>
-                    </tr>
-                    {!this.props.state.space.contractStatus ? (
-                      this.props.state.auth.status === true ? (
-                        <tr>
-                          <th>店舗を借りる</th>
-                          <td>
-                            <p className="space_detail_form_text">
-                              開始日時と終了日時を選択して確認を押してください。
-                            </p>
-                            <div className="space_detail_form">
-                              {this.state.messages
-                                .filter(m => {
-                                  return m.field !== "date_end";
-                                })
-                                .map((m, index) => {
-                                  return (
-                                    <p
-                                      key={index}
-                                      className="form_element_text_error"
-                                    >
-                                      {m.message}
-                                    </p>
-                                  );
-                                })}
-                              <div className="space_detail_form_block">
-                                <DatePickerWrap
-                                  onClick={this.datePickerStartChange.bind(
-                                    this
-                                  )}
-                                  date={this.state.startDate}
-                                  placeholder="開始日を選択してください"
-                                />
+        <div className="content">
+          <div className="content_inner">
+            {this.props.state.queryLoading ? (
+                  <div className="_block_loading" />
+            ) : (
+              <Fragment>
+                <ContentHeader title={this.props.state.space.name} />
+                <div className="space_detail">
+                  <div className="space_detail_image">
+                    {this.props.state.space.mainImage && (
+                      <img src={this.props.state.space.mainImage} alt="" />
+                    )}
+                  </div>
+                  <table className="space_detail_table">
+                    <tbody>
+                      <tr>
+                        <th>店舗名</th>
+                        <td>{this.props.state.space.name}</td>
+                      </tr>
+                      <tr>
+                        <th>店舗について</th>
+                        <td>{this.props.state.space.description}</td>
+                      </tr>
+                      <tr>
+                        <th>価格</th>
+                        <td>
+                          {numeral(this.props.state.space.price).format("0,0")}円
+                        </td>
+                      </tr>
+                      {!this.props.state.space.contractStatus ? (
+                        this.props.state.auth.status === true ? (
+                          <tr>
+                            <th>店舗を借りる</th>
+                            <td>
+                              <p className="space_detail_form_text">
+                                開始日時と終了日時を選択して確認を押してください。
+                              </p>
+                              <div className="space_detail_form">
+                                {this.state.messages
+                                  .filter(m => {
+                                    return m.field !== "date_end";
+                                  })
+                                  .map((m, index) => {
+                                    return (
+                                      <p
+                                        key={index}
+                                        className="form_element_text_error"
+                                      >
+                                        {m.message}
+                                      </p>
+                                    );
+                                  })}
+                                <div className="space_detail_form_block">
+                                  <DatePickerWrap
+                                    onClick={this.datePickerStartChange.bind(
+                                      this
+                                    )}
+                                    date={this.state.startDate}
+                                    placeholder="開始日を選択してください"
+                                  />
+                                </div>
+                                {this.state.messages
+                                  .filter(m => {
+                                    return m.field === "date_end";
+                                  })
+                                  .map((m, index) => {
+                                    return (
+                                      <p
+                                        key={index}
+                                        className="form_element_text_error"
+                                      >
+                                        {m.message}
+                                      </p>
+                                    );
+                                  })}
+                                <div className="space_detail_form_block">
+                                  <DatePickerWrap
+                                    onClick={this.datePickerEndChange.bind(this)}
+                                    date={this.state.endDate}
+                                    placeholder="終了日時を選択してください"
+                                  />
+                                </div>
+                                <button
+                                  className="space_detail_form_submit"
+                                  onClick={this.contractConfirm.bind(this)}
+                                >
+                                  確認
+                                </button>
                               </div>
-                              {this.state.messages
-                                .filter(m => {
-                                  return m.field === "date_end";
-                                })
-                                .map((m, index) => {
-                                  return (
-                                    <p
-                                      key={index}
-                                      className="form_element_text_error"
-                                    >
-                                      {m.message}
-                                    </p>
-                                  );
-                                })}
-                              <div className="space_detail_form_block">
-                                <DatePickerWrap
-                                  onClick={this.datePickerEndChange.bind(this)}
-                                  date={this.state.endDate}
-                                  placeholder="終了日時を選択してください"
-                                />
-                              </div>
-                              <button
-                                className="space_detail_form_submit"
-                                onClick={this.contractConfirm.bind(this)}
-                              >
-                                確認
-                              </button>
-                            </div>
-                            <SpaceModal
-                              state={this.state}
-                              submit={this.contractSubmit.bind(this)}
-                              close={this.contractClose.bind(this)}
-                            />
-                          </td>
-                        </tr>
+                              <SpaceModal
+                                state={this.state}
+                                submit={this.contractSubmit.bind(this)}
+                                close={this.contractClose.bind(this)}
+                              />
+                            </td>
+                          </tr>
+                        ) : (
+                          <tr>
+                            <td colSpan="2">
+                              <p className="space_detail_form_text _ct">
+                                ログインして借りよう
+                              </p>
+                              <p className="color_1_btn">
+                                <Link
+                                  to={{
+                                    pathname: "/login",
+                                    state: { from: this.props.location.pathname }
+                                  }}
+                                >
+                                  ログインする
+                                </Link>
+                              </p>
+                            </td>
+                          </tr>
+                        )
                       ) : (
                         <tr>
                           <td colSpan="2">
-                            <p className="space_detail_form_text _ct">
-                              ログインして借りよう
-                            </p>
-                            <p className="color_1_btn">
-                              <Link
-                                to={{
-                                  pathname: "/login",
-                                  state: { from: this.props.location.pathname }
-                                }}
-                              >
-                                ログインする
-                              </Link>
-                            </p>
+                            <p className="space_detail_text">契約済</p>
                           </td>
                         </tr>
-                      )
-                    ) : (
-                      <tr>
-                        <td colSpan="2">
-                          <p className="space_detail_text">契約済</p>
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-              <p className="color_3_btn">
-                <Link to="/space">一覧に戻る</Link>
-              </p>
-            </div>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+                <p className="color_3_btn">
+                  <Link to="/space">一覧に戻る</Link>
+                </p>
+              </Fragment>
+            )}
           </div>
-        )}
+        </div>
         <SuccessModal
           status={this.state.success}
           close={this.successClose.bind(this)}

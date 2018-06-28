@@ -6,7 +6,6 @@ import * as actions from "../actions";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { contractSpacesQuery } from "./parts/Query";
-import moment from "moment";
 import Cookie from "js-cookie";
 import { authQuery } from "./parts/Query";
 import { dateDisplay } from "../functions";
@@ -15,10 +14,9 @@ const query = token => {
   return JSON.stringify({
     query: `query($token: String) {
       auth(token: $token) { ${authQuery} }
-      contractSpaces(
-        token: $token, order: ["contract_start"]
-        contractEnd_Gte: "${moment().format("Y-MM-DDTHH:mm:ss")}"
-      ) { ${contractSpacesQuery} }
+      contractSpaces(token: $token, order: ["contract_start"]) {
+        ${contractSpacesQuery}
+      }
     }`,
     variables: {
       token: token

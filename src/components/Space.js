@@ -77,14 +77,18 @@ class Space extends Component {
               title="スペース"
               text="レンタルスペースをかんたん予約"
             />
-            <SpaceBlock data={this.props.state.spaces} />
-            {this.props.state.spaces.edges && (
-              <Pager
-                data={this.props.state.spaces}
-                load={this.pageLoader.bind(this)}
-                current={this.props.match.params.page || 1}
-                slug="/space/page/"
-              />
+            {this.props.state.queryLoading ? (
+              <div className="_block_loading" />
+            ) : (
+              <Fragment>
+                <SpaceBlock data={this.props.state.spaces} />
+                <Pager
+                  data={this.props.state.spaces}
+                  load={this.pageLoader.bind(this)}
+                  current={this.props.match.params.page || 1}
+                  slug="/space/page/"
+                />
+              </Fragment>
             )}
           </div>
         </div>

@@ -179,12 +179,14 @@ class AccountTests(TestCase):
     def setUpTestData(cls):
         Account.objects.create(
             id='12345',
+            name='sample man',
             email='sample+12345@tam-bourine.co.jp',
             is_active=False,
         )
 
         Account.objects.create(
             id='67898765',
+            name='sample man',
             email='sample+test@tam-bourine.co.jp',
             password=make_password('test12345'),
             is_active=True,
@@ -192,6 +194,7 @@ class AccountTests(TestCase):
 
         Account.objects.create(
             id='1sssd',
+            name='sample man',
             email='sample+dev@tam-bourine.co.jp',
             password=make_password('test12345'),
             is_active=True,

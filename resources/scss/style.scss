@@ -162,6 +162,9 @@
         float: none;
 
         margin: 0;
+        padding: 0;
+
+        border-bottom: 1px solid #ddd;
     }
     a
     {
@@ -1075,6 +1078,42 @@
 {
     font-size: 16px;
     line-height: 1.8;
+}
+._block_loading
+{
+    width: 100%;
+    height: 100px;
+    position: relative;
+
+    background: rgba(255, 255, 255, .7);
+
+    &:after
+    {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+
+        display: inline-block;
+
+        width: 30px;
+        height: 30px;
+        margin: auto;
+
+        content: '';
+        -webkit-animation: LoadingDelay .75s 0s infinite linear;
+                animation: LoadingDelay .75s 0s infinite linear;
+
+        border-width: 2px;
+        border-style: solid;
+        border-color: #ddd #ddd transparent;
+        border-radius: 100%;
+        background: transparent;
+
+        -webkit-animation-fill-mode: both;
+                animation-fill-mode: both;
+    }
 }
 ._loading
 {

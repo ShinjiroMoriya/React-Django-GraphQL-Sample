@@ -3,14 +3,13 @@ import { Link } from "react-router-dom";
 import { dateDisplay } from "../../functions";
 
 export const NewsBlock = props => {
-  return (
+  return props.data.edges ? (
     <ul className="news">
-      {props.data.edges &&
-        props.data.edges.map((item, index) => {
-          return <NewsItem key={index} news={item.node} />;
-        })}
+      {props.data.edges.map((item, index) => {
+        return <NewsItem key={index} news={item.node} />;
+      })}
     </ul>
-  );
+  ) : null;
 };
 
 export const NewsItem = props => {

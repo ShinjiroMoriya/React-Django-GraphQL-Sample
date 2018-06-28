@@ -57,24 +57,30 @@ class NewsDetail extends Component {
         </Helmet>
         <div className="content">
           <div className="content_inner">
-            <ContentHeader title={this.props.state.newsItem.name} />
-            <div className="news_detail">
-              <p className="news_detail_date">
-                {dateDisplay(
-                  this.props.state.newsItem.activeDate,
-                  "Y年MM月DD日"
-                )}
-              </p>
-              <div
-                className="news_detail_content"
-                dangerouslySetInnerHTML={{
-                  __html: this.props.state.newsItem.content
-                }}
-              />
-            </div>
-            <p className="color_3_btn">
-              <Link to="/news">一覧に戻る</Link>
-            </p>
+            {this.props.state.queryLoading ? (
+              <div className="_block_loading" />
+            ) : (
+              <Fragment>
+                <ContentHeader title={this.props.state.newsItem.name} />
+                <div className="news_detail">
+                  <p className="news_detail_date">
+                    {dateDisplay(
+                      this.props.state.newsItem.activeDate,
+                      "Y年MM月DD日"
+                    )}
+                  </p>
+                  <div
+                    className="news_detail_content"
+                    dangerouslySetInnerHTML={{
+                      __html: this.props.state.newsItem.content
+                    }}
+                  />
+                </div>
+                <p className="color_3_btn">
+                  <Link to="/news">一覧に戻る</Link>
+                </p>
+              </Fragment>
+            )}
           </div>
         </div>
       </Fragment>

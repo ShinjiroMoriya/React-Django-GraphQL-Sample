@@ -74,6 +74,9 @@ class News extends Component {
         <div className="content">
           <div className="content_inner">
             <ContentHeader title="ニュース" text="最新情報をお届け" />
+            {this.props.state.queryLoading && (
+              <div className="_block_loading" />
+            )}
             <NewsBlock data={this.props.state.newsItems} />
             {this.props.state.newsItems.edges && (
               <Pager

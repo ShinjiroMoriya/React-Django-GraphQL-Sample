@@ -42,8 +42,7 @@ class SpaceType(DjangoObjectType):
     class Meta:
         model = Space
         filter_fields = {
-            'name': ['exact'],
-            'contract_end': ['gte'],
+            'id': ['exact'],
         }
         interfaces = (Node,)
         connection_class = Connection
