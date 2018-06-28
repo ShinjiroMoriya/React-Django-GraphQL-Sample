@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { ContentHeader } from "./parts/ContentHeader";
 import { SuccessModal } from "./parts/Modal";
 import Validator from "validatorjs";
-import { authQuery, errorQuery } from "./parts/Query";
+import { loginQuery, errorQuery } from "./parts/Query";
 import Cookie from "js-cookie";
 import { stringToDate } from "../functions";
 
@@ -71,7 +71,9 @@ class Login extends Component {
     }
   }
 
-  doLogin() {
+  doLogin(event) {
+    event.preventDefault();
+
     const email = this.refs.email.value;
     const password = this.refs.password.value;
 
@@ -82,7 +84,7 @@ class Login extends Component {
           JSON.stringify({
             query: `mutation($email: String!, $password: String!) {
               login(email: $email, password: $password) {
-                success auth { ${authQuery} } errors { ${errorQuery} }
+                success auth { ${loginQuery} } errors { ${errorQuery} }
               }
             }`,
             variables: {
@@ -108,9 +110,7 @@ class Login extends Component {
             });
           }
         })
-        .catch(e => {
-          this.props.errorAction(e);
-        });
+        .catch(e => this.props.errorAction(e));
     }
     if (!email || !password) {
       let messages = [];
@@ -153,7 +153,7 @@ class Login extends Component {
                     </p>
                   );
                 })}
-              <div className="form_element">
+              <form className="form_element" onSubmit={this.doLogin.bind(this)}>
                 {this.state.messages
                   .filter(m => {
                     return m.field === "email";
@@ -188,11 +188,11 @@ class Login extends Component {
                   placeholder="パスワード"
                   onBlur={this.doValidator.bind(this)}
                 />
-                <button onClick={this.doLogin.bind(this)}>ログイン</button>
+                <button type="submit">ログイン</button>
                 <p className="forgot_link">
                   パスワードを忘れた方は<Link to="/password">こちら</Link>
                 </p>
-              </div>
+              </form>
             </div>
             <p className="btn_3">
               <Link to={this.from}>

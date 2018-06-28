@@ -7,7 +7,7 @@ import { connect } from "react-redux";
 import { ContentHeader } from "./parts/ContentHeader";
 import { SuccessModal } from "./parts/Modal";
 import Validator from "validatorjs";
-import { authQuery, errorQuery } from "./parts/Query";
+import { loginQuery, errorQuery } from "./parts/Query";
 import Cookie from "js-cookie";
 import { stringToDate } from "../functions";
 
@@ -81,7 +81,9 @@ class PasswordConfirm extends Component {
     }
   }
 
-  doSubmit() {
+  doSubmit(event) {
+    event.preventDefault();
+
     const password = this.refs.password.value;
     const password_confirm = this.refs.password_confirm.value;
     if (password && password === password_confirm) {
@@ -91,7 +93,7 @@ class PasswordConfirm extends Component {
           JSON.stringify({
             query: `mutation($token: String!, $password: String!) { ` +
               `resetPasswordConfirm(token: $token, password: $password) { ` +
-                `success auth { ${authQuery} } ` +
+                `success auth { ${loginQuery} } ` +
                 `errors { ${errorQuery} } ` +
             `} }`,
             variables: {
@@ -152,7 +154,7 @@ class PasswordConfirm extends Component {
               <p className="form_element_text">
                 再登録するパスワードを入力してください。
               </p>
-              <div className="form_element">
+              <form className="form_element" onSubmit={this.doSubmit.bind(this)}>
                 <input
                   ref="password"
                   type="password"
@@ -165,8 +167,8 @@ class PasswordConfirm extends Component {
                   placeholder="確認パスワード"
                   onBlur={this.doValidator.bind(this)}
                 />
-                <button onClick={this.doSubmit.bind(this)}>登録</button>
-              </div>
+                <button type="submit">登録</button>
+              </form>
             </div>
             <p className="btn_3">
               <Link to="/login">戻る</Link>

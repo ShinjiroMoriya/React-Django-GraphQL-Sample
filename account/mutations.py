@@ -256,20 +256,15 @@ class Logout(graphene.Mutation):
     """
     Mutation to logout a account
     """
-    class Arguments:
-        token = graphene.String(required=True)
-
     success = graphene.Boolean()
     errors = graphene.List(ErrorsType)
     auth = graphene.Field(AuthType)
 
     @staticmethod
-    def mutate(_, __, **kwargs):
+    def mutate(_, info):
         try:
-            token = kwargs.get('token')
-            account_token = AccountToken.get_token({
-                'token': token,
-            })
+            token = info.context.META.get('HTTP_AUTHORIZATION')
+            account_token = AccountToken.get_token({'token': token})
             if account_token is None:
                 return Logout(
                     success=False,

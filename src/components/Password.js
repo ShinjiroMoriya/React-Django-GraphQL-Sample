@@ -59,7 +59,9 @@ class Password extends Component {
     }
   }
 
-  doSend() {
+  doSend(event) {
+    event.preventDefault();
+
     const email = this.refs.email.value;
     if (!email) {
       this.setState({
@@ -120,7 +122,7 @@ class Password extends Component {
         <div className="content">
           <div className="content_inner">
             <ContentHeader title="パスワード再設定" />
-            <div className="form_element_wrap">
+            <form className="form_element_wrap" onSubmit={this.doSend.bind(this)}>
               {this.state.messages.map((m, index) => {
                 return (
                   <p key={index} className="form_element_text_error">
@@ -138,9 +140,9 @@ class Password extends Component {
                   placeholder="Eメールアドレス"
                   onBlur={this.doValidator.bind(this)}
                 />
-                <button onClick={this.doSend.bind(this)}>送信</button>
+                <button type="submit">送信</button>
               </div>
-            </div>
+            </form>
             <p className="btn_3">
               <Link to="/login">戻る</Link>
             </p>

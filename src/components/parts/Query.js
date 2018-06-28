@@ -2,8 +2,13 @@ export const accountQuery = "" +
 "id name";
 
 export const authQuery = "" +
+"status expire " +
+"account { id name }";
+
+export const loginQuery = "" +
 "status expire token " +
 "account { id name }";
+
 
 export const contractSpacesQuery = "" +
 "edges { node { pk name contractStart contractEnd } }";

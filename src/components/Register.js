@@ -6,7 +6,7 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { ContentHeader } from "./parts/ContentHeader";
 import { SuccessModal } from "./parts/Modal";
-import { authQuery, errorQuery } from "./parts/Query";
+import { loginQuery, errorQuery } from "./parts/Query";
 import Cookie from "js-cookie";
 import { stringToDate } from "../functions";
 
@@ -37,7 +37,7 @@ class Register extends Component {
           JSON.stringify({
             query: `mutation($email: String!, $password: String!) { ` +
               `register(email: $email, password: $password) { ` +
-                `success auth { ${authQuery} } ` +
+                `success auth { ${loginQuery} } ` +
                 `errors { ${errorQuery} } ` +
             `} }`,
             variables: {
