@@ -43,8 +43,9 @@ class SpaceQuery(graphene.ObjectType):
             page=kwargs.get('page'),
             per_page=s.SPACE_PERPAGE,
         )
-        return [i for i in Space.objects.all()][
-               pagination.offset: pagination.offset + pagination.per_page]
+        offset = pagination.offset
+        per_page = pagination.per_page
+        return [i for i in Space.objects.all()[offset: offset + per_page]]
 
     contract_spaces = DjangoFilterConnectionField(
         SpaceType,
@@ -72,6 +73,6 @@ class SpaceQuery(graphene.ObjectType):
 
     @staticmethod
     def resolve_top_spaces(_, __, **kwargs):
-        return [i for i in Space.objects.all()][: int(kwargs.get('limit'))]
+        return [i for i in Space.objects.all()[: int(kwargs.get('limit'))]]
 
     debug = graphene.Field(DjangoDebug)

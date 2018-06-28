@@ -7,13 +7,14 @@ import * as actions from "../actions";
 import { bindActionCreators } from "redux";
 import { NewsBlock } from "./parts/News";
 import { SpaceBlock } from "./parts/Space";
-import { authQuery, topSpaceQuery, topNewsQuery } from "./parts/Query";
+import { authQuery, spacesQuery, topSpaceQuery, topNewsQuery } from "./parts/Query";
 import { expireUpdate } from "../functions";
 
 const query = () => {
   return JSON.stringify({
     query: `query { ` +
       `auth { ${authQuery} } ` +
+      `spaces { ${spacesQuery} } ` +
       `topSpaces { ${topSpaceQuery} } ` +
       `topNewsItems { ${topNewsQuery} } ` +
     `}`

@@ -21,4 +21,10 @@ class AuthQuery(graphene.ObjectType):
                     expire=account_token.expire,
                     account=account_token.account
                 )
-        return AuthType(status=False, token=None, expire=None, account=None)
+
+        return AuthType(
+            status=False,
+            token=None,
+            expire=None,
+            account=None
+        )

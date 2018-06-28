@@ -67,9 +67,8 @@ app.get("*", (req, res) => {
   const branch = matchRoutes(Routes, req.url);
   const fetchData = branch.map(({ route, match }) => {
     const fetchAction = route.component.fetchAction;
-    const params = Object.keys(match.params).length !== 0 ? match.params : null;
     return fetchAction instanceof Function
-      ? fetchAction(store, req.cookies.uid, params)
+      ? fetchAction(store, req.cookies.uid, match.params)
       : Promise.resolve(null);
   });
   return Promise.all(fetchData)

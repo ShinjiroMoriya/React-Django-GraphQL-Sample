@@ -34,8 +34,9 @@ class NewsQuery(graphene.ObjectType):
             page=kwargs.get('page'),
             per_page=s.NEWS_PERPAGE,
         )
-        return [i for i in News.get_news_items()][
-               pagination.offset: pagination.offset + pagination.per_page]
+        offset = pagination.offset
+        per_page = pagination.per_page
+        return [i for i in News.get_news_items()[offset: offset + per_page]]
 
     top_news_items = DjangoFilterConnectionField(
         NewsType,
@@ -44,6 +45,6 @@ class NewsQuery(graphene.ObjectType):
 
     @staticmethod
     def resolve_top_news_items(_, __, **kwargs):
-        return [i for i in News.get_news_items()][: int(kwargs.get('limit'))]
+        return [i for i in News.get_news_items()[: int(kwargs.get('limit'))]]
 
     debug = graphene.Field(DjangoDebug)
