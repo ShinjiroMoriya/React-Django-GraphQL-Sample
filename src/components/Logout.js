@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as actions from "../actions";
 import Cookie from "js-cookie";
-import { authQuery } from "./parts/Query";
+import { authQuery, errorQuery } from "./parts/Query";
 
 class Logout extends Component {
   constructor(props) {
@@ -11,12 +11,11 @@ class Logout extends Component {
 
     this.props.mutationAction(
       JSON.stringify({
-        query: `mutation {
-          logout {
-            auth { ${authQuery} }
-            success errors { field message }
-          }
-        }`
+        query: `mutation { ` +
+          `logout { ` +
+            `auth { ${authQuery} } ` +
+            `success errors { ${errorQuery} }` +
+        `} }`
       }),
       "logout"
     );
