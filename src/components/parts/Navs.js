@@ -42,7 +42,7 @@ export const Navigation = props => {
           ニュース
         </Link>
       </li>
-      {props.data.state.auth.status === false && (
+      {/* {props.data.state.auth.status === false && (
         <li>
           <Link
             onClick={props.side}
@@ -52,7 +52,7 @@ export const Navigation = props => {
             ログイン
           </Link>
         </li>
-      )}
+      )} */}
     </Fragment>
   );
 };

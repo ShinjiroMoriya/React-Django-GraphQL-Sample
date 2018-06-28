@@ -4,16 +4,61 @@
 
 .header
 {
-    padding: 20px;
-
-    border-bottom: 1px solid #ddd;
-
-    @include clearfix;
     @include mediaQuery(767)
     {
         position: relative;
 
         padding: 0;
+    }
+}
+.header_inner {
+    padding: 20px;
+
+    border-bottom: 1px solid #ddd;
+    height: 21px;
+    @include clearfix;
+
+    @include mediaQuery(767) {
+        height: auto;
+        padding: 0;
+    }
+}
+.header_nav {
+    @include clearfix;
+    border-bottom: 1px solid #ddd;
+}
+.header_nav_list {
+    float: right;
+    padding: 10px 20px 10px 0;
+
+    @include mediaQuery(767) {
+        float: none;
+        display: table;
+        width: 100%;
+        padding: 0;
+    }
+    li {
+        font-size: 13px;
+        float: left;
+        margin: 0 0 0 20px;
+
+        @include mediaQuery(767) {
+            display: table-cell;
+            float: none;
+            margin: 0;
+            text-align: center;
+        }
+
+        a {
+            @include mediaQuery(767) {
+                display: block;
+                padding: 10px 0;
+            }
+            &:hover,
+            &.active {
+                color: #004085;
+            }
+        }
     }
 }
 .open
@@ -45,6 +90,7 @@
 
     @include mediaQuery(767)
     {
+        border-top: 1px solid #ddd;
         display: none;
         float: none;
     }
@@ -59,64 +105,12 @@
         }
     }
 }
-.header_menu_list
-{
-    float: left;
-
-    padding: 3px 0 0 0;
-
-    @include mediaQuery(767)
-    {
-        float: none;
-
-        padding: 0;
-
-        border-top: 1px solid #ddd;
-    }
-    li
-    {
-        font-size: 14px;
-        line-height: 1;
-
-        float: left;
-
-        margin: 0 0 0 20px;
-
-        @include mediaQuery(767)
-        {
-            float: none;
-
-            margin: 0;
-
-            border-bottom: 1px solid #ddd;
-        }
-
-        a
-        {
-            @include mediaQuery(767)
-            {
-                display: block;
-
-                padding: 10px;
-            }
-            &:hover
-            {
-                text-decoration: underline;
-            }
-            &.active
-            {
-                color: #004085;
-            }
-        }
-    }
-}
 .header_account_link
 {
     font-weight: bold;
 
     float: left;
 
-    margin: 0 0 0 40px;
     padding: 3px 0 0 0;
 
     @include mediaQuery(767)
@@ -146,6 +140,7 @@
         }
     }
 }
+.header_account_login,
 .header_account_logout
 {
     font-weight: bold;
@@ -163,8 +158,6 @@
 
         margin: 0;
         padding: 0;
-
-        border-bottom: 1px solid #ddd;
     }
     a
     {

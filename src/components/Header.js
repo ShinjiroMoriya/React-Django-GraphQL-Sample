@@ -13,18 +13,15 @@ class Header extends Component {
   render() {
     return (
       <header className="header">
-        <div className="header_logo">
-          <Link to="/">
-            <img src="/assets/images/logo.svg" alt="BASYO KASHI" />
-          </Link>
-        </div>
-        {!this.props.state.queryLoading && (
-          <Fragment>
+        <div className="header_inner">
+          <div className="header_logo">
+            <Link to="/">
+              <img src="/assets/images/logo.svg" alt="BASYO KASHI" />
+            </Link>
+          </div>
+          {!this.props.state.queryLoading && (
             <div className="header_menu">
-              <ul className="header_menu_list">
-                <Navigation data={this.props} side={this.spMenu} />
-              </ul>
-              {this.props.state.auth.status === true && (
+              {this.props.state.auth.status === true ? (
                 <Fragment>
                   <p className="header_account_link">
                     {this.props.state.auth.account.name && (
@@ -39,17 +36,26 @@ class Header extends Component {
                     </Link>
                   </p>
                 </Fragment>
+              ) : (
+                <p className="header_account_login">
+                  <Link to="login">ログイン</Link>
+                </p>
               )}
             </div>
-            <div className="sp_menu" onClick={this.spMenu}>
-              <div className="sp_menu_trigger">
-                <span />
-                <span />
-                <span />
-              </div>
+          )}
+          <div className="sp_menu" onClick={this.spMenu}>
+            <div className="sp_menu_trigger">
+              <span />
+              <span />
+              <span />
             </div>
-          </Fragment>
-        )}
+          </div>
+        </div>
+        <div className="header_nav">
+          <ul className="header_nav_list">
+            <Navigation data={this.props} />
+          </ul>
+        </div>
       </header>
     );
   }
