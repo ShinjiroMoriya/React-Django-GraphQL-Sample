@@ -17,13 +17,13 @@ class SpaceContract(graphene.Mutation):
         endDate = graphene.String(required=True)
         token = graphene.String(required=True)
         spaceId = graphene.String(required=True)
+        order = graphene.List(graphene.String)
 
     success = graphene.Boolean()
     errors = graphene.List(ErrorsType)
     space = graphene.Field(SpaceType)
     contract_spaces = DjangoFilterConnectionField(
         SpaceType,
-        order=graphene.List(graphene.String),
     )
 
     @staticmethod
@@ -82,7 +82,8 @@ class SpaceContract(graphene.Mutation):
                 order = ['-created_date']
 
             contract_spaces = Space.get_spaces({
-                'account': account_token.account
+                'account': account_token.account,
+                'contract_end__gte': datetime.now(),
             }).order_by(*order)
 
             return SpaceContract(

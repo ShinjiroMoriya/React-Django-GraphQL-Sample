@@ -6,6 +6,7 @@ name
 export const authQuery = `
 status
 expire
+token
 account {
   id
   name

@@ -55,10 +55,7 @@ class Top extends Component {
           <meta name="description" content="BASYO KASHI" />
         </Helmet>
         <div className="full_image">
-          <img
-            src="/assets/images/main.jpg"
-            alt=""
-          />
+          <img src="/assets/images/main.jpg" alt="" />
         </div>
         <div className="content">
           <div className="content_inner">

@@ -67,24 +67,18 @@ GRAPHENE = {
     ],
 }
 
-if TESTING:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
-else:
-    db = dj_database_url.parse(os.environ.get('DATABASE_URL') +
-                               '?currentSchema=public,salesforce')
-    try:
-        del db['OPTIONS']['currentSchema']
-    except:
-        pass
+db = dj_database_url.parse(os.environ.get('DATABASE_URL') +
+                           '?currentSchema=public,salesforce')
+try:
+    del db['OPTIONS']['currentSchema']
+except:
+    pass
 
-    DATABASES = {
-        'default': db,
-    }
+DATABASES = {
+    'default': db,
+}
+
+TEST_RUNNER = 'tb_app.test_runner.PostgresSchemaTestRunner'
 
 TEMPLATES = [
     {

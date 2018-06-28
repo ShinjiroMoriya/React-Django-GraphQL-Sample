@@ -13,4 +13,5 @@ class AccountType(DjangoObjectType):
 class AuthType(graphene.ObjectType):
     status = graphene.Boolean()
     expire = graphene.DateTime()
+    token = graphene.String()
     account = graphene.Field(AccountType)

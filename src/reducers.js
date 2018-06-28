@@ -2,6 +2,7 @@ const initialState = {
   auth: {
     status: false,
     expire: null,
+    token: null,
     account: {}
   },
   spaces: {},

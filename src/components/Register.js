@@ -17,9 +17,7 @@ class Register extends Component {
       success: false,
       messages: []
     };
-  }
 
-  componentWillMount() {
     if (Cookie.get("uid")) {
       this.props.history.push("/");
     } else {
@@ -39,7 +37,7 @@ class Register extends Component {
           JSON.stringify({
             query: `mutation($email: String!, $password: String!) {
               register(email: $email, password: $password) {
-                success token auth { ${authQuery} }
+                success auth { ${authQuery} }
                 errors { ${errorQuery} }
               }
             }`,
@@ -53,7 +51,7 @@ class Register extends Component {
         .then(res => {
           if (res.type === "SUCCESS") {
             this.setState({ success: true });
-            Cookie.set("uid", res.token, {
+            Cookie.set("uid", res.auth.token, {
               expires: stringToDate(res.auth.expire),
               secure: true
             });

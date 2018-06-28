@@ -8,6 +8,7 @@ import { ContentHeader } from "./parts/ContentHeader";
 import { SuccessModal } from "./parts/Modal";
 import Validator from "validatorjs";
 import { errorQuery } from "./parts/Query";
+import Cookie from "js-cookie";
 
 class Password extends Component {
   constructor(props) {
@@ -16,7 +17,7 @@ class Password extends Component {
       success: false,
       messages: []
     };
-    if (this.props.state.auth.status === true) {
+    if (Cookie.get("uid")) {
       this.props.history.push("/");
     } else {
       this.props.queryNoAction();

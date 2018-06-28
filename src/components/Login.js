@@ -23,7 +23,7 @@ class Login extends Component {
     } else {
       this.from = "/";
     }
-    if (this.props.state.auth.status === true) {
+    if (Cookie.get("uid")) {
       this.props.history.push("/");
     } else {
       this.props.queryNoAction();
@@ -82,8 +82,7 @@ class Login extends Component {
           JSON.stringify({
             query: `mutation($email: String!, $password: String!) {
               login(email: $email, password: $password) {
-                success token auth { ${authQuery} }
-                errors { ${errorQuery} }
+                success auth { ${authQuery} } errors { ${errorQuery} }
               }
             }`,
             variables: {
@@ -99,7 +98,7 @@ class Login extends Component {
               success: true
             });
             this.props.disabledAction();
-            Cookie.set("uid", res.token, {
+            Cookie.set("uid", res.auth.token, {
               expires: stringToDate(res.auth.expire),
               secure: true
             });

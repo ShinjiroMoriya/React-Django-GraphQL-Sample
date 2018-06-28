@@ -7,7 +7,7 @@ from django.contrib.auth.hashers import make_password
 
 class AccountTests(TestCase):
 
-    login_query = """
+    login_mutation = """
     mutation(
         $email: String!,
         $password: String!
@@ -16,8 +16,15 @@ class AccountTests(TestCase):
             email: $email,
             password: $password
         ) {
-            expire
-            token
+            auth {
+                status
+                expire
+                token
+                account {
+                    id
+                    name
+                }
+            }
             success
             errors {
                 field
@@ -27,7 +34,7 @@ class AccountTests(TestCase):
     }
     """
 
-    logout_query = """
+    logout_mutation = """
     mutation(
         $token: String!,
     ) {
@@ -39,11 +46,20 @@ class AccountTests(TestCase):
                 field
                 message
             }
+            auth {
+                status
+                expire
+                token
+                account {
+                    id
+                    name
+                }
+            }
         }
     }
     """
 
-    register_query = """
+    register_mutation = """
     mutation(
         $email: String!,
         $password: String!
@@ -52,12 +68,16 @@ class AccountTests(TestCase):
             email: $email,
             password: $password
         ) {
-            account {
-                email
+            auth {
+                status
+                expire
+                token
+                account {
+                    id
+                    name
+                }
             }
             success
-            token
-            expire
             errors {
                 field
                 message
@@ -66,7 +86,7 @@ class AccountTests(TestCase):
     }
     """
 
-    update_query = """
+    update_mutation = """
     mutation(
         $token: String!,
         $name: String!
@@ -75,10 +95,14 @@ class AccountTests(TestCase):
             token: $token
             name: $name
         ) {
-            account {
-                id
-                name
-                email
+            auth {
+                status
+                expire
+                token
+                account {
+                    id
+                    name
+                }
             }
             success
             errors {
@@ -89,29 +113,7 @@ class AccountTests(TestCase):
     }
     """
 
-    account_by_token_query = """
-    mutation(
-        $token: String!
-    ) {
-        accountByToken(
-            token: $token
-        ) {
-            account {
-                name
-                email
-                isActive
-                createdDate
-                updatedDate
-            }
-            success
-            errors {
-                message
-            }
-        }
-    }
-    """
-
-    reset_password_query = """
+    reset_password_mutation = """
     mutation(
         $email: String!
     ) {
@@ -124,14 +126,11 @@ class AccountTests(TestCase):
                 field
                 message
             }
-            account {
-                passwordToken
-            }
         }
     }
     """
 
-    reset_password_confirm_query = """
+    reset_password_confirm_mutation = """
     mutation(
         $token: String!,
         $password: String!
@@ -141,11 +140,15 @@ class AccountTests(TestCase):
             password: $password
         ) {
             success
-            account {
-                name
+            auth {
+                status
+                token
+                expire
+                account {
+                    id
+                    name
+                }
             }
-            token
-            expire
             errors {
                 field
                 message
@@ -154,7 +157,7 @@ class AccountTests(TestCase):
     }
     """
 
-    delete_query = """
+    delete_mutation = """
     mutation(
         $email: String!,
         $password: String!
@@ -175,18 +178,21 @@ class AccountTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         Account.objects.create(
-            email='moriya+12345@tam-bourine.co.jp',
+            id='12345',
+            email='sample+12345@tam-bourine.co.jp',
             is_active=False,
         )
 
         Account.objects.create(
-            email='moriya+test@tam-bourine.co.jp',
+            id='67898765',
+            email='sample+test@tam-bourine.co.jp',
             password=make_password('test12345'),
             is_active=True,
         )
 
         Account.objects.create(
-            email='moriya+dev@tam-bourine.co.jp',
+            id='1sssd',
+            email='sample+dev@tam-bourine.co.jp',
             password=make_password('test12345'),
             is_active=True,
         )
@@ -196,27 +202,27 @@ class AccountTests(TestCase):
 
     def test_login_mutation_success(self):
         result = schema.execute(
-            self.login_query,
+            self.login_mutation,
             variable_values={
-                'email': 'moriya+test@tam-bourine.co.jp',
+                'email': 'sample+test@tam-bourine.co.jp',
                 'password': 'test12345',
             }
         )
         assert result.data['login']['errors'] is None
-        assert result.data['login']['token'] is not None
+        assert result.data['login']['auth']['token'] is not None
         assert result.data['login']['success'] is True
 
     def test_logout_mutation_success(self):
         login_result = schema.execute(
-            self.login_query,
+            self.login_mutation,
             variable_values={
-                'email': 'moriya+test@tam-bourine.co.jp',
+                'email': 'sample+test@tam-bourine.co.jp',
                 'password': 'test12345',
             }
         )
-        token = login_result.data['login']['token']
+        token = login_result.data['login']['auth']['token']
         result = schema.execute(
-            self.logout_query,
+            self.logout_mutation,
             variable_values={
                 'token': token,
             }
@@ -226,9 +232,9 @@ class AccountTests(TestCase):
 
     def test_register_mutation_success(self):
         result = schema.execute(
-            self.register_query,
+            self.register_mutation,
             variable_values={
-                'email': 'moriya+12345@tam-bourine.co.jp',
+                'email': 'sample+12345@tam-bourine.co.jp',
                 'password': 'test12345'
             }
         )
@@ -237,55 +243,36 @@ class AccountTests(TestCase):
 
     def test_account_update_mutation_success(self):
         before_data = Account.get_account(
-            {'email': 'moriya+test@tam-bourine.co.jp'}
+            {'email': 'sample+test@tam-bourine.co.jp'}
         )
 
         before_name = before_data.name
 
         login_result = schema.execute(
-            self.login_query,
+            self.login_mutation,
             variable_values={
-                'email': 'moriya+test@tam-bourine.co.jp',
+                'email': 'sample+test@tam-bourine.co.jp',
                 'password': 'test12345',
             }
         )
-        token = login_result.data['login']['token']
+        token = login_result.data['login']['auth']['token']
 
         result = schema.execute(
-            self.update_query,
+            self.update_mutation,
             variable_values={
                 'token': token,
                 'name': 'test_sample',
             }
         )
-        assert result.data['accountUpdate']['account']['name'] != before_name
-
-    def test_get_account_by_token_mutation_success(self):
-        login_result = schema.execute(
-            self.login_query,
-            variable_values={
-                'email': 'moriya+test@tam-bourine.co.jp',
-                'password': 'test12345',
-            }
-        )
-
-        token = login_result.data['login']['token']
-
-        result = schema.execute(
-            self.account_by_token_query,
-            variable_values={
-                'token': token,
-            }
-        )
-        assert result.data['accountByToken']['errors'] is None
-        assert result.data['accountByToken']['account'] is not None
-        assert result.data['accountByToken']['success'] is True
+        assert result.data[
+                   'accountUpdate'
+               ]['auth']['account']['name'] != before_name
 
     def test_reset_password_mutation_success(self):
         result = schema.execute(
-            self.reset_password_query,
+            self.reset_password_mutation,
             variable_values={
-                'email': 'moriya+test@tam-bourine.co.jp',
+                'email': 'sample+test@tam-bourine.co.jp',
             }
         )
         assert result.data['resetPassword']['errors'] is None
@@ -294,14 +281,14 @@ class AccountTests(TestCase):
 
     def test_reset_password_confirm_mutation_success(self):
         send_result = schema.execute(
-            self.reset_password_query,
+            self.reset_password_mutation,
             variable_values={
-                'email': 'moriya+test@tam-bourine.co.jp',
+                'email': 'sample+test@tam-bourine.co.jp',
             }
         )
         token = send_result.data['resetPassword']['sendToken']
         password_result = schema.execute(
-            self.reset_password_confirm_query,
+            self.reset_password_confirm_mutation,
             variable_values={
                 'token': token,
                 'password': "qwerty1234",
@@ -311,21 +298,20 @@ class AccountTests(TestCase):
         assert password_result.data['resetPasswordConfirm']['success'] is True
 
         login_result = schema.execute(
-            self.login_query,
+            self.login_mutation,
             variable_values={
-                'email': 'moriya+test@tam-bourine.co.jp',
+                'email': 'sample+test@tam-bourine.co.jp',
                 'password': 'qwerty1234',
             }
         )
-
         assert login_result.data['login']['errors'] is None
         assert login_result.data['login']['success'] is True
 
     def test_delete_mutation_success(self):
         result = schema.execute(
-            self.delete_query,
+            self.delete_mutation,
             variable_values={
-                'email': 'moriya+dev@tam-bourine.co.jp',
+                'email': 'sample+dev@tam-bourine.co.jp',
                 'password': 'test12345',
             }
         )

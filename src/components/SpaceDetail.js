@@ -140,7 +140,7 @@ class SpaceDetail extends Component {
       .mutationAction(
         JSON.stringify({
           query: `mutation($startDate: String!, $endDate: String!, $token: String!, $spaceId: String!) {
-          spaceContract(startDate: $startDate, endDate: $endDate, token: $token, spaceId: $spaceId) {
+          spaceContract(startDate: $startDate, endDate: $endDate, token: $token, spaceId: $spaceId, order: ["contract_start"]) {
             success
             errors { ${errorQuery} }
             space { ${spaceQuery} }

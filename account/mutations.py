@@ -6,7 +6,7 @@ from django.core.mail import EmailMessage
 from django.contrib.auth.hashers import make_password
 from account.models import Account
 from account_token.models import AccountToken
-from account.types import AccountType, AuthType
+from account.types import AuthType
 from tb_app.types import ErrorsType
 from tb_app.fernet_cipher import fernet
 from tb_app.serializer import (
@@ -24,7 +24,6 @@ class Register(graphene.Mutation):
 
     success = graphene.Boolean()
     errors = graphene.List(ErrorsType)
-    token = graphene.String()
     auth = graphene.Field(AuthType)
 
     @staticmethod
@@ -77,9 +76,9 @@ class Register(graphene.Mutation):
 
             return Register(
                 success=True,
-                token=account_token.token,
                 auth=AuthType(
                     status=True,
+                    token=account_token.token,
                     expire=account_token.expire,
                     account=account,
                 )
@@ -111,15 +110,18 @@ class AccountUpdate(graphene.Mutation):
 
     success = graphene.Boolean()
     errors = graphene.List(ErrorsType)
-    account = graphene.Field(AccountType)
+    auth = graphene.Field(AuthType)
 
     @staticmethod
+    @transaction.atomic
     def mutate(_, __, **kwargs):
+
+        sid = transaction.savepoint()
+
         try:
             token = kwargs.get('token')
-            token_data = serializer_time_loads(
-                fernet.decrypt(token), time_seconds(days=1))
-            if fernet.decrypt(token) is None or token_data is None:
+            account_token = AccountToken.get_account({'token': token})
+            if account_token is None:
                 return AccountUpdate(
                     success=False,
                     errors=[
@@ -129,9 +131,22 @@ class AccountUpdate(graphene.Mutation):
                     ]
                 )
 
-            account = Account.get_account({
-                "id": token_data.get('id'),
-            })
+            if account_token.expire < datetime.now():
+                account_token.delete()
+                return AccountUpdate(
+                    success=False,
+                    errors=[
+                        ErrorsType(
+                            field='expired',
+                            message='期限切れです。'
+                        )
+                    ]
+                )
+
+            account_token.expire = datetime.now() + timedelta(days=1)
+            account_token.save()
+
+            account = account_token.account
             name = kwargs.get('name', account.name)
             email = kwargs.get('email', account.email)
 
@@ -139,16 +154,27 @@ class AccountUpdate(graphene.Mutation):
             account.email = email
             account.save()
 
+            transaction.savepoint_commit(sid)
+
             return AccountUpdate(
                 success=True,
-                account=account
+                auth=AuthType(
+                    status=True,
+                    token=account_token.token,
+                    expire=account_token.expire,
+                    account=account
+                )
             )
 
         except Exception as e:
+
+            transaction.savepoint_rollback(sid)
+
             return AccountUpdate(
                 success=False,
                 errors=[
                     ErrorsType(
+                        field='exception',
                         message=str(e)
                     )
                 ]
@@ -165,8 +191,6 @@ class Login(graphene.Mutation):
 
     success = graphene.Boolean()
     errors = graphene.List(ErrorsType)
-    token = graphene.String()
-    account = graphene.Field(AccountType)
     auth = graphene.Field(AuthType)
 
     @staticmethod
@@ -198,10 +222,9 @@ class Login(graphene.Mutation):
                 )
                 return Login(
                     success=status,
-                    account=account,
-                    token=account_token.token,
                     auth=AuthType(
                         status=True,
+                        token=account_token.token,
                         expire=account_token.expire,
                         account=account_token.account
                     )
@@ -222,7 +245,7 @@ class Login(graphene.Mutation):
                 success=False,
                 errors=[
                     ErrorsType(
-                        field='Exception',
+                        field='exception',
                         message=str(e)
                     )
                 ]
@@ -244,17 +267,6 @@ class Logout(graphene.Mutation):
     def mutate(_, __, **kwargs):
         try:
             token = kwargs.get('token')
-            if fernet.decrypt(token) is None:
-                return Logout(
-                    success=False,
-                    errors=[
-                        ErrorsType(
-                            field='token',
-                            message='トークンが無効です。'
-                        )
-                    ]
-                )
-
             account_token = AccountToken.get_token({
                 'token': token,
             })
@@ -279,82 +291,10 @@ class Logout(graphene.Mutation):
                 success=False,
                 errors=[
                     ErrorsType(
-                        field='Exception',
-                        message=str(e)
-                    )
-                ]
-            )
-
-
-class RefreshToken(graphene.Mutation):
-    """
-    Mutation to re_authenticate a Account
-    """
-    class Arguments:
-        token = graphene.String(required=True)
-
-    success = graphene.Boolean()
-    errors = graphene.List(ErrorsType)
-    token = graphene.String()
-    auth = graphene.Field(AuthType)
-
-    @staticmethod
-    def mutate(_, __, token):
-        try:
-            account_id = fernet.decrypt(token)
-            old_account_token = AccountToken.get_accounts(
-                {'token': token})
-            if len(old_account_token) != 0:
-                old_account_token.delete()
-            else:
-                return RefreshToken(
-                    success=False,
-                    errors=[
-                        ErrorsType(
-                            field='token',
-                            message='トークンが無効です。'
-                        )
-                    ]
-                )
-
-            account = Account.get_account({'id': account_id})
-
-            if account is None:
-                return RefreshToken(
-                    success=False,
-                    errors=[
-                        ErrorsType(
-                            field='account',
-                            message='アカウントが存在しません。'
-                        )
-                    ]
-                )
-
-            new_account_token = AccountToken.objects.create(
-                token=fernet.encrypt(str(account.id)),
-                expire=datetime.now() + timedelta(days=1),
-                account=account,
-            )
-
-            return RefreshToken(
-                success=True,
-                token=new_account_token.token,
-                auth=AuthType(
-                    status=True,
-                    expire=new_account_token.expire,
-                    account=account,
-                )
-            )
-
-        except Exception as e:
-            return RefreshToken(
-                success=False,
-                errors=[
-                    ErrorsType(
                         field='exception',
                         message=str(e)
                     )
-                ],
+                ]
             )
 
 
@@ -367,6 +307,7 @@ class ResetPassword(graphene.Mutation):
 
     success = graphene.Boolean()
     errors = graphene.List(ErrorsType)
+    send_token = graphene.String()
 
     @staticmethod
     @transaction.atomic
@@ -418,7 +359,10 @@ class ResetPassword(graphene.Mutation):
 
                 transaction.savepoint_commit(sid)
 
-                return ResetPassword(success=True)
+                return ResetPassword(
+                    success=True,
+                    send_token=str(serialized_token)
+                )
 
             else:
 
@@ -459,8 +403,8 @@ class ResetPasswordConfirm(graphene.Mutation):
 
     success = graphene.Boolean()
     errors = graphene.List(ErrorsType)
-    account = graphene.Field(AccountType)
     token = graphene.String()
+    auth = graphene.Field(AuthType)
 
     @staticmethod
     def mutate(_, __, **kwargs):
@@ -493,6 +437,7 @@ class ResetPasswordConfirm(graphene.Mutation):
                         )
                     ]
                 )
+
             account.password_token = None
             account.password = make_password(password)
             account.save()
@@ -505,9 +450,12 @@ class ResetPasswordConfirm(graphene.Mutation):
 
             return ResetPasswordConfirm(
                 success=True,
-                account=account,
-                token=account_token.token,
-                expire=account_token.expire,
+                auth=AuthType(
+                    status=True,
+                    token=account_token.token,
+                    expire=account_token.expire,
+                    account=account,
+                ),
             )
 
         except Exception as e:

@@ -8,7 +8,7 @@ from django.contrib.auth.hashers import make_password
 
 class SpaceTests(TestCase):
 
-    space_contract_query = """
+    space_contract_mutation = """
     mutation(
         $startDate: String!,
         $endDate: String!,
@@ -19,7 +19,8 @@ class SpaceTests(TestCase):
             startDate: $startDate,
             endDate: $endDate,
             spaceId: $spaceId,
-            token: $token
+            token: $token,
+            order: ['contract_start']
         ) {
             success
             errors {
@@ -30,10 +31,22 @@ class SpaceTests(TestCase):
                 pk
                 name
             }
+            contractSpaces {
+                edges {
+                    node {
+                        pk
+                        name
+                        contractStatus
+                    }
+                }
+                pages
+                perPage
+                currentPage
+            }
         }
     }
     """
-    login_query = """
+    login_mutation = """
     mutation(
         $email: String!,
         $password: String!
@@ -42,8 +55,15 @@ class SpaceTests(TestCase):
             email: $email,
             password: $password
         ) {
-            expire
-            token
+            auth {
+                status
+                expire
+                token
+                account {
+                    id
+                    name
+                }
+            }
             success
             errors {
                 field
@@ -56,7 +76,7 @@ class SpaceTests(TestCase):
     @classmethod
     def setUpTestData(cls):
         Space.objects.create(
-            id="5e07482b-6b1e-48c7-941f-072e91b2df3c",
+            id="5e07482b",
             name='スペース新宿',
             description="テストです",
             price="15000"
@@ -64,8 +84,8 @@ class SpaceTests(TestCase):
 
         Account.objects.create(
             name='test_jiro',
-            email='moriya+dev@tam-bourine.co.jp',
-            password=make_password('02080208'),
+            email='sample+dev@tam-bourine.co.jp',
+            password=make_password('password12345'),
             is_active=True,
         )
 
@@ -74,18 +94,18 @@ class SpaceTests(TestCase):
 
     def test_space_contract_mutation_success(self):
         login_result = schema.execute(
-            self.login_query,
+            self.login_mutation,
             variable_values={
-                'email': 'moriya+dev@tam-bourine.co.jp',
-                'password': '02080208',
+                'email': 'sample+dev@tam-bourine.co.jp',
+                'password': 'password12345',
             }
         )
-        token = login_result.data['login']['token']
+        token = login_result.data['login']['auth']['token']
         result = schema.execute(
-            self.space_contract_query,
+            self.space_contract_mutation,
             variable_values={
                 'token': token,
-                'spaceId': '5e07482b-6b1e-48c7-941f-072e91b2df3c',
+                'spaceId': '5e07482b',
                 'startDate': '2018-06-20 12:00',
                 'endDate': '2018-07-20 12:00',
             }

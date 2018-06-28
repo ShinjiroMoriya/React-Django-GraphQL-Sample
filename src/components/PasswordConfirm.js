@@ -21,6 +21,8 @@ class PasswordConfirm extends Component {
 
     if (Cookie.get("uid")) {
       this.props.history.push("/");
+    } else {
+      this.props.queryNoAction();
     }
   }
 
@@ -90,7 +92,7 @@ class PasswordConfirm extends Component {
           JSON.stringify({
             query: `mutation($token: String!, $password: String!) {
               resetPasswordConfirm(token: $token, password: $password) {
-                success token auth { ${authQuery} }
+                success auth { ${authQuery} }
                 errors { ${errorQuery} }
               }
             }`,
@@ -106,7 +108,7 @@ class PasswordConfirm extends Component {
             this.setState({
               success: true
             });
-            Cookie.set("uid", res.token, {
+            Cookie.set("uid", res.auth.token, {
               expires: stringToDate(res.auth.expire),
               secure: true
             });
