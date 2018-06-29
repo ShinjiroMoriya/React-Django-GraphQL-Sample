@@ -20,6 +20,7 @@ import reducers from "./src/reducers";
 import cookieParser from "cookie-parser";
 import favicon from "serve-favicon";
 import path from "path";
+import moment from "moment";
 
 if (typeof window === "undefined") {
   global.window = {};
@@ -73,6 +74,15 @@ app.get("*", (req, res) => {
   });
   return Promise.all(fetchData)
     .then(() => {
+      const state = store.getState();
+      if (state.auth.status === true) {
+        const current_time = new Date().valueOf();
+        const expire_time = new Date(state.auth.expire).valueOf();
+        res.cookie("uid", req.cookies.uid, {
+          maxAge: expire_time - current_time,
+          secure: true
+        });
+      }
       const context = {};
       const html = ReactDOMServer.renderToStaticMarkup(
         <Provider store={store}>
@@ -89,7 +99,7 @@ app.get("*", (req, res) => {
           helmet: helmet,
           html: html,
           assets: assets,
-          initialState: store.getState()
+          initialState: state
         }),
         {
           collapseWhitespace: true
