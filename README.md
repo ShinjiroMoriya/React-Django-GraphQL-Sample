@@ -49,9 +49,7 @@ app.use(
 ```
 
 ## Deploy
-- `.env.production`ファイルを作成し、
-```GRAPHQL_URL=https://[APP-NAME].herokuapp.com/graphql```
-を書き込む。
+- `.env.production`ファイルを作成し、```GRAPHQL_URL=https://[APP-NAME].herokuapp.com/graphql```を書き込む。
 - `$ npm run build`でビルドする。
 
 ## Local開発

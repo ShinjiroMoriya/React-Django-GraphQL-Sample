@@ -20,10 +20,11 @@ import { expireUpdate } from "../functions";
 
 const query = pk => {
   return JSON.stringify({
-    query: `query($spaceId: String!) { ` +
+    query:
+      `query($spaceId: String!) { ` +
       `auth { ${authQuery} } ` +
       `space(spaceId: $spaceId) { ${spaceQuery} } ` +
-    `}`,
+      `}`,
     variables: {
       spaceId: pk
     }
@@ -129,12 +130,13 @@ class SpaceDetail extends Component {
     this.props
       .mutationAction(
         JSON.stringify({
-          query: `mutation($startDate: String!, $endDate: String!, $spaceId: String!) { ` +
+          query:
+            `mutation($startDate: String!, $endDate: String!, $spaceId: String!) { ` +
             `spaceContract(startDate: $startDate, endDate: $endDate, spaceId: $spaceId, order: ["contract_start"]) { ` +
-              `success errors { ${errorQuery} } ` +
-              `space { ${spaceQuery} } ` +
-              `contractSpaces { ${contractSpacesQuery} } ` +
-          `} }`,
+            `success errors { ${errorQuery} } ` +
+            `space { ${spaceQuery} } ` +
+            `contractSpaces { ${contractSpacesQuery} } ` +
+            `} }`,
           variables: {
             startDate: this.state.startDate,
             endDate: this.state.endDate,

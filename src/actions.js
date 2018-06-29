@@ -21,6 +21,7 @@ export const queryNoAction = () => dispatch => {
 
 export const queryAction = (query, uid) => dispatch => {
   const token = uid || Cookie.get("uid");
+  const authorization = token ? { Authorization: `Bearer ${token}` } : null;
   dispatch({
     type: "REQUEST",
     queryLoading: true
@@ -31,7 +32,7 @@ export const queryAction = (query, uid) => dispatch => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: token || null
+        ...authorization
       },
       body: query
     })
@@ -60,6 +61,9 @@ export const queryAction = (query, uid) => dispatch => {
 };
 
 export const mutationAction = (query, type) => dispatch => {
+  const authorization = Cookie.get("uid")
+    ? { Authorization: `Bearer ${Cookie.get("uid")}` }
+    : null;
   dispatch({
     type: "REQUEST",
     mutationLoading: true
@@ -70,7 +74,7 @@ export const mutationAction = (query, type) => dispatch => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: Cookie.get("uid") || null
+        ...authorization
       },
       body: query
     })

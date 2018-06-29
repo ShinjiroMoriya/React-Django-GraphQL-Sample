@@ -10,10 +10,11 @@ import { dateDisplay, expireUpdate } from "../functions";
 
 const query = pk => {
   return JSON.stringify({
-    query: `query($newsId: String!) { ` +
+    query:
+      `query($newsId: String!) { ` +
       `auth { ${authQuery} } ` +
       `newsItem(newsId: $newsId) { ${newsItemQuery} } ` +
-    `}`,
+      `}`,
     variables: { newsId: pk }
   });
 };

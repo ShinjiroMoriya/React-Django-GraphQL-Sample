@@ -7,6 +7,7 @@ from tb_app.pagination import Pagination
 from graphene_django.filter import DjangoFilterConnectionField
 from django.conf import settings as s
 from datetime import datetime
+from tb_app.services import get_auth_token
 
 
 class SpaceQuery(graphene.ObjectType):
@@ -54,13 +55,16 @@ class SpaceQuery(graphene.ObjectType):
 
     @staticmethod
     def resolve_contract_spaces(_, info, **kwargs):
-        token = info.context.META.get('HTTP_AUTHORIZATION')
+        token = get_auth_token(info.context)
         order = kwargs.get('order')
+
         if order is None:
             order = ['-created_date']
+
         account_token = AccountToken.get_account({'token': token})
         if account_token is None:
             return None
+
         return Space.get_spaces({
             'account': account_token.account,
             'contract_end__gte': datetime.now(),

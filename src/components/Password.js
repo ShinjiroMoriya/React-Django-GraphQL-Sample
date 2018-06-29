@@ -78,10 +78,11 @@ class Password extends Component {
     this.props
       .mutationAction(
         JSON.stringify({
-          query: `mutation($email: String!) { ` +
+          query:
+            `mutation($email: String!) { ` +
             `resetPassword(email: $email) { ` +
-              `success errors { ${errorQuery} } ` +
-          `} }`,
+            `success errors { ${errorQuery} } ` +
+            `} }`,
           variables: { email: email }
         }),
         "resetPassword"
@@ -122,7 +123,10 @@ class Password extends Component {
         <div className="content">
           <div className="content_inner">
             <ContentHeader title="パスワード再設定" />
-            <form className="form_element_wrap" onSubmit={this.doSend.bind(this)}>
+            <form
+              className="form_element_wrap"
+              onSubmit={this.doSend.bind(this)}
+            >
               {this.state.messages.map((m, index) => {
                 return (
                   <p key={index} className="form_element_text_error">

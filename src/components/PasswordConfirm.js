@@ -91,11 +91,12 @@ class PasswordConfirm extends Component {
       this.props
         .mutationAction(
           JSON.stringify({
-            query: `mutation($token: String!, $password: String!) { ` +
+            query:
+              `mutation($token: String!, $password: String!) { ` +
               `resetPasswordConfirm(token: $token, password: $password) { ` +
-                `success auth { ${loginQuery} } ` +
-                `errors { ${errorQuery} } ` +
-            `} }`,
+              `success auth { ${loginQuery} } ` +
+              `errors { ${errorQuery} } ` +
+              `} }`,
             variables: {
               token: this.props.match.params.token,
               password: password
@@ -154,7 +155,10 @@ class PasswordConfirm extends Component {
               <p className="form_element_text">
                 再登録するパスワードを入力してください。
               </p>
-              <form className="form_element" onSubmit={this.doSubmit.bind(this)}>
+              <form
+                className="form_element"
+                onSubmit={this.doSubmit.bind(this)}
+              >
                 <input
                   ref="password"
                   type="password"

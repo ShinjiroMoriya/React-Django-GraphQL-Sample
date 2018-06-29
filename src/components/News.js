@@ -11,10 +11,11 @@ import { expireUpdate } from "../functions";
 
 const query = page => {
   return JSON.stringify({
-    query: `query($page: Int) { ` +
+    query:
+      `query($page: Int) { ` +
       `auth { ${authQuery} } ` +
       `newsItems(page: $page) { ${newsQuery} } ` +
-    `}`,
+      `}`,
     variables: { page: page }
   });
 };

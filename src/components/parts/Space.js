@@ -41,14 +41,9 @@ export const DatePickerWrap = ({ date, onClick, placeholder }) => {
       timeIntervals={60}
       dateFormatCalendar={"YYYY年 MMM"}
       dateFormat="Y年MM月DD日 HH:mm"
-      minTime={moment()
-        .hours(10)
-        .minutes(0)}
-      maxTime={moment()
-        .hours(19)
-        .minutes(30)}
       selected={date}
       onChange={onClick}
+      minDate={moment()}
       placeholderText={placeholder}
     />
   );

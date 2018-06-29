@@ -9,6 +9,7 @@ from account_token.models import AccountToken
 from account.types import AuthType
 from tb_app.types import ErrorsType
 from tb_app.fernet_cipher import fernet
+from tb_app.services import get_auth_token
 from tb_app.serializer import (
     serializer_time_dumps, serializer_time_loads, time_seconds,
 )
@@ -263,7 +264,7 @@ class Logout(graphene.Mutation):
     @staticmethod
     def mutate(_, info):
         try:
-            token = info.context.META.get('HTTP_AUTHORIZATION')
+            token = get_auth_token(info.context)
             account_token = AccountToken.get_token({'token': token})
             if account_token is None:
                 return Logout(
@@ -339,7 +340,7 @@ class ResetPassword(graphene.Mutation):
 
             email_message = EmailMessage(
                 subject='パスワード再発行',
-                from_email='BASYO KASHI<app@tam-bourine.co.jp>',
+                from_email='BASYO KASHI<app@basyo-kashi.site>',
                 to=[email],
                 body="""
                 <h3>変更手続きをしてください。</h3>

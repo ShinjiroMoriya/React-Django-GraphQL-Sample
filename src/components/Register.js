@@ -35,11 +35,12 @@ class Register extends Component {
       this.props
         .mutationAction(
           JSON.stringify({
-            query: `mutation($email: String!, $password: String!) { ` +
+            query:
+              `mutation($email: String!, $password: String!) { ` +
               `register(email: $email, password: $password) { ` +
-                `success auth { ${loginQuery} } ` +
-                `errors { ${errorQuery} } ` +
-            `} }`,
+              `success auth { ${loginQuery} } ` +
+              `errors { ${errorQuery} } ` +
+              `} }`,
             variables: {
               email: email,
               password: password

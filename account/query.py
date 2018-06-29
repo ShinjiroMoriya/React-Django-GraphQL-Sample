@@ -2,6 +2,7 @@ import graphene
 from datetime import datetime, timedelta
 from account.types import AuthType
 from account_token.models import AccountToken
+from tb_app.services import get_auth_token
 
 
 class AuthQuery(graphene.ObjectType):
@@ -9,7 +10,7 @@ class AuthQuery(graphene.ObjectType):
 
     @staticmethod
     def resolve_auth(_, info):
-        token = info.context.META.get('HTTP_AUTHORIZATION')
+        token = get_auth_token(info.context)
         if token is not None:
             account_token = AccountToken.get_account({'token': token})
             if account_token is not None:

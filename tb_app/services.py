@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 
 
@@ -26,3 +27,12 @@ def string_to_date(date: str):
         pass
 
     return None
+
+
+def get_auth_token(request):
+    try:
+        app_tk = request.META["HTTP_AUTHORIZATION"]
+        m = re.search('(Bearer)(\s)(.*)', app_tk)
+        return m.group(3)
+    except:
+        return None
