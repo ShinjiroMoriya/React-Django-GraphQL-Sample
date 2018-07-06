@@ -4,7 +4,7 @@ from account_token.models import AccountToken
 from space.models import Space
 from space.types import SpaceType
 from tb_app.types import ErrorsType
-from tb_app.services import string_to_date
+from tb_app.services import string_to_date, get_auth_token
 from graphene_django.filter import DjangoFilterConnectionField
 
 
@@ -31,7 +31,7 @@ class SpaceContract(graphene.Mutation):
             start_date = string_to_date(kwargs.get('startDate'))
             end_date = string_to_date(kwargs.get('endDate'))
             space_id = kwargs.get('spaceId')
-            token = info.context.META.get('HTTP_AUTHORIZATION')
+            token = get_auth_token(info.context)
 
             account_token = AccountToken.get_account({'token': token})
             if account_token is None:

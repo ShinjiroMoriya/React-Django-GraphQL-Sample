@@ -105,7 +105,6 @@ class AccountUpdate(graphene.Mutation):
     Mutation to update a account
     """
     class Arguments:
-        token = graphene.String(required=True)
         name = graphene.String()
         email = graphene.String()
 
@@ -115,12 +114,12 @@ class AccountUpdate(graphene.Mutation):
 
     @staticmethod
     @transaction.atomic
-    def mutate(_, __, **kwargs):
+    def mutate(_, info, **kwargs):
 
         sid = transaction.savepoint()
 
         try:
-            token = kwargs.get('token')
+            token = get_auth_token(info.context)
             account_token = AccountToken.get_account({'token': token})
             if account_token is None:
                 return AccountUpdate(
@@ -528,3 +527,6 @@ class DeleteAccount(graphene.Mutation):
                     )
                 ]
             )
+
+
+# token = get_auth_token(info.context)
