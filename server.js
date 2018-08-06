@@ -20,7 +20,6 @@ import reducers from "./src/reducers";
 import cookieParser from "cookie-parser";
 import favicon from "serve-favicon";
 import path from "path";
-import moment from "moment";
 
 if (typeof window === "undefined") {
   global.window = {};
