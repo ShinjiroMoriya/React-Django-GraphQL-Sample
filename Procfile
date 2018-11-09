@@ -1,2 +1,2 @@
-release: make build
+release: npm run build
 web: bin/runsvdir-dyno
